@@ -5,7 +5,7 @@ Specifies a regular expression for file filtering. The behaviour is CASE_INSENSI
 
 The argument is only effective if the *source_file* argument is a directory.
 
-[](include:../common/notes/note_regexp_remarks.md)
-[](include:../common/notes/note_regexp_additional.md)
-[](include:./note_regexp_example_replace.md)
+[](include:include/common/notes/note_regexp_remarks.md)
+[](include:include/common/notes/note_regexp_additional.md)
+[](include:include/file/notes/note_regexp_example_replace.md)
 </article>

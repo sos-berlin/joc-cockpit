@@ -7,5 +7,5 @@ The filter checks if the *Subject* field of an e-mail matches a Regular Expressi
 
 For filtering by a substrings instead of a Regular Expression, the *mail_subject_filter* can be used. 
 
-[](include:../../common/notes/note_regexp_remarks.md)
+[](include:include/common/notes/note_regexp_remarks.md)
 </article>

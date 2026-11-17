@@ -5,5 +5,5 @@ Specifies minimum size of one or more files.
 
 File size is specified in bytes: should the size of one of the files fall below this value, then it will not be processed by the file operation.
 
-[](include:../common/notes/note_file_size_values.md)
+[](include:include/common/notes/note_file_size_values.md)
 </article>
