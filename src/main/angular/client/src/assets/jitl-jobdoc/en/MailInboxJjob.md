@@ -47,6 +47,6 @@ Any general *mail.\**, POP3 *mail.pop3.\** and IMAP *mail.imap.\** properties fo
 [](include:include/mail/params/param_post_action.md)
 [](include:include/mail/params/param_mail_target_folder.md)
 
-[](include:include/common/params/params_credential_store_file.md)
-[](include:include/common/params/params_credential_store_key_file.md)
-[](include:include/common/params/params_credential_store_entry_path.md)
+[](include:include/common/params/param_credential_store_file.md)
+[](include:include/common/params/param_credential_store_key_file.md)
+[](include:include/common/params/param_credential_store_entry_path.md)
