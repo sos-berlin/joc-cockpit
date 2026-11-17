@@ -19,16 +19,16 @@
       "$ref": "include/file/param_recursive.json"
     },
     {
-      "$ref": "include/file/param_max_file_age.json"
-    },
-    {
-      "$ref": "include/file/param_max_file_size.json"
-    },
-    {
       "$ref": "include/file/param_min_file_age.json"
     },
     {
+      "$ref": "include/file/param_max_file_age.json"
+    },
+    {
       "$ref": "include/file/param_min_file_size.json"
+    },
+    {
+      "$ref": "include/file/param_max_file_size.json"
     },
     {
       "$ref": "include/file/param_skip_first_files.json"
@@ -69,10 +69,10 @@
   ],
   "returnVariables": [
     {
-      "$ref": "include/file/return/param_fileoperations_result_set.json"
+      "$ref": "include/file/return/param_file_operations_result_set.json"
     },
     {
-      "$ref": "include/file/return/param_fileoperations_result_set_size.json"
+      "$ref": "include/file/return/param_file_operations_result_set_size.json"
     }
   ]
 }

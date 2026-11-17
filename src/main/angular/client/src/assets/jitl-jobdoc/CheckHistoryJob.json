@@ -64,7 +64,7 @@
       "dataType": "STRING"
     },
     {
-      "name": "js7CheckHistorQueryWorkflow",
+      "name": "js7CheckHistoryQueryWorkflow",
       "required": false,
       "dataType": "STRING"
     },
