@@ -223,9 +223,9 @@ Specifies the path to the output file that will hold the result set in csv, xml 
 The argument is required by the *resultset_as* argument when used with the `csv`, `xml` or `json` value 
 </article>            
 
-[](include:include/common/params/params_credential_store_file.md)
-[](include:include/common/params/params_credential_store_key_file.md)
-[](include:include/common/params/params_credential_store_entry_path.md)
+[](include:include/common/params/param_credential_store_file.md)
+[](include:include/common/params/param_credential_store_key_file.md)
+[](include:include/common/params/param_credential_store_entry_path.md)
 
 # Return Variables
 
