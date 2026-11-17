@@ -23,7 +23,7 @@ The outcome of the job can be used in subsequent *If Instructions* in a workflow
 
 The outcome of the job can be used in subsequent *Prompt Instructions* in a workflow.
 
-- Example:  `$js7CheckHistoryQuery ++ '(' ++ $js7CheckHistoryQueryWorkflow ++ ') ==> ' ++ $returnCode`
+- Example: `$js7CheckHistoryQuery ++ '(' ++ $js7CheckHistoryQueryWorkflow ++ ') ==> ' ++ $returnCode`
 
 ### Use with *Retry Instruction*
 

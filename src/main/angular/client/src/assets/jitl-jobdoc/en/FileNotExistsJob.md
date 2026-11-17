@@ -40,5 +40,5 @@ If at least one matching file is found then the job will terminate and an error 
 
 # Return Variables
 
-[](include:include/file/params/params/return/param_fileoperations_result_set.md)
-[](include:include/file/params/params/return/param_fileoperations_result_set_size.md)
+[](include:include/file/params/return/param_file_operations_result_set.md)
+[](include:include/file/params/return/param_file_operations_result_set_size.md)
