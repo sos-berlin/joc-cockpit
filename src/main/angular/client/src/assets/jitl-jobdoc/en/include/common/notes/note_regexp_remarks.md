@@ -1,6 +1,6 @@
 A few remarks on regular expressions used in JobScheduler and YADE.
 
-A regular expression is not a [wildcard](http://en.wikipedia.org/wiki/Wildcard_character#Files_and_directories).
+A regular expression is not a [wildcard](https://en.wikipedia.org/wiki/Wildcard_character#File_and_directory_patterns).
 To get an idea of the differences, users can check the meaning of the wildcard \*.txt, which will
 select all file names with the file name extension `.txt`.
 A regular expression works in a similar way, the wildcard just looks like `^.*\.txt$`.
@@ -8,7 +8,7 @@ This is more flexible and powerfull for filtering file names
 than the concept of wildcards, if users want to filter more complex names or patterns.
 
 The general syntax of a
-[regular expression](http://en.wikipedia.org/wiki/Regular_expression) is explained by The IEEE and The Open Group like
+[regular expression](https://en.wikipedia.org/wiki/Regular_expression) is explained by The IEEE and The Open Group like
 [this](https://pubs.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap09.html).
 
 There are differences in regular expression implementation, for example in Java and Perl.

@@ -57,10 +57,10 @@
   ],
   "returnVariables": [
     {
-      "$ref": "include/file/return/param_fileoperations_result_set.json"
+      "$ref": "include/file/return/param_file_operations_result_set.json"
     },
     {
-      "$ref": "include/file/return/param_fileoperations_result_set_size.json"
+      "$ref": "include/file/return/param_file_operations_result_set_size.json"
     }
   ]
 }

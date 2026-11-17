@@ -39,5 +39,5 @@ The job checks the existence of a file, of a directory or of files inside a dire
 
 # Return Variables
 
-[](include:include/file/params/params/return/param_fileoperations_result_set.md)
-[](include:include/file/params/params/return/param_fileoperations_result_set_size.md)
+[](include:include/file/params/return/param_file_operations_result_set.md)
+[](include:include/file/params/return/param_file_operations_result_set_size.md)

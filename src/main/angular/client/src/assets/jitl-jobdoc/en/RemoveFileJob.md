@@ -45,5 +45,5 @@ The job removes one or more files or directories.
 
 # Return Variables
 
-[](include:include/file/params/return/param_fileoperations_result_set.md)
-[](include:include/file/params/return/param_fileoperations_result_set_size.md)
+[](include:include/file/params/return/param_file_operations_result_set.md)
+[](include:include/file/params/return/param_file_operations_result_set_size.md)
