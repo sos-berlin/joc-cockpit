@@ -16,7 +16,8 @@ import {KioskService} from "./kiosk.service";
 import {DateHelperService} from 'ng-zorro-antd/i18n';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import {NzModalService} from 'ng-zorro-antd/modal';
-import {HelpViewerComponent} from '../components/help-viewer/help-viewer.component';
+import {HelpViewerComponent, JITL_DOC_KEY_PREFIX} from '../components/help-viewer/help-viewer.component';
+import {JitlDocService} from './jitl-doc.service';
 import {VideoViewerComponent} from '../components/video-viewer/video-viewer.component';
 import {VideoContextComponent} from '../components/video-viewer/video-context.component';
 
@@ -71,7 +72,8 @@ export class CoreService {
   private sortedTags: string[] = [];
 
   constructor(private http: HttpClient, private authService: AuthService, private router: Router, private toasterService: ToastrService,
-              private clipboardService: ClipboardService, private translate: TranslateService, private popupService: PopupService, private sanitizer: DomSanitizer, private kioskService: KioskService, private fb: FormBuilder,private modal: NzModalService, private dateHelper: DateHelperService) {
+              private clipboardService: ClipboardService, private translate: TranslateService, private popupService: PopupService, private sanitizer: DomSanitizer, private kioskService: KioskService, private fb: FormBuilder,private modal: NzModalService, private dateHelper: DateHelperService,
+              private jitlDocService: JitlDocService) {
     this.init();
     this.applyWeekStartToDatePicker();
     this.dashboard._dashboard = {};
@@ -1540,7 +1542,57 @@ export class CoreService {
     });
   }
 
+  /**
+   * Loads the JITL job names (API inventory/wizard/jobs) once per session, so that showDocumentation()
+   * can recognise JITL documentation references synchronously. Only for accounts that may view the inventory,
+   * otherwise the request would fail with an error message; those accounts keep the old documentation page.
+   */
+  preloadJitlJobs(): void {
+    if (!this.jitlDocService.needsJobs()) {
+      return;
+    }
+    let permission: any = {};
+    try {
+      permission = JSON.parse(this.authService.permission || '{}') || {};
+    } catch (e) {
+      permission = {};
+    }
+    if (!permission.joc?.inventory?.view) {
+      return;
+    }
+    this.jitlDocService.markJobsRequested();
+    this.post('inventory/wizard/jobs', {language: this.getDocumentationLanguage()}).subscribe({
+      next: (res: any) => this.jitlDocService.setJobs(res?.jobs),
+      error: () => { /* keep the old documentation behaviour */ }
+    });
+  }
+
+  /**
+   * Language of help pages and JITL job documentation (same order as HelpViewerComponent).
+   * Sent as "language" to inventory/wizard/jobs and inventory/wizard/job; the API falls back to en.
+   */
+  getDocumentationLanguage(): string {
+    let preferences: any = {};
+    try {
+      preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+    } catch (e) {
+      preferences = {};
+    }
+    return preferences?.locale || localStorage['$SOS$LANG'] || 'en';
+  }
+
+  /** Job Wizard: reuse its inventory/wizard/jobs response instead of a second request. */
+  setJitlJobs(jobs: any[]): void {
+    this.jitlDocService.setJobs(jobs);
+  }
+
   showDocumentation(path: string, preferences: any): void {
+    // Migrated JITL job documentation is shown like a help page; everything else keeps the old behaviour.
+    const jitlJob = this.jitlDocService.findJob(path);
+    if (jitlJob) {
+      this.openHelpPage(JITL_DOC_KEY_PREFIX + jitlJob.name);
+      return;
+    }
     const link = window.location.origin + '/joc/api/documentation/show?documentation=' + encodeURIComponent(path) + '&accessToken=' + this.authService.accessTokenId;
     let win;
     if (preferences.isDocNewWindow === 'newWindow') {
