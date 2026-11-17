@@ -11226,7 +11226,7 @@ cdk-virtual-scroll-viewport {
   margin: 0 0 .6rem !important;
   font-weight: 700 !important;
   padding-bottom: .6rem !important;
-  border-bottom: 1px solid #e5e7eb !important;
+  border-bottom: 1px solid var(--border-color) !important;
 }
 
 .help-md h2 {
@@ -11234,7 +11234,7 @@ cdk-virtual-scroll-viewport {
   margin: 2rem 0 .5rem !important;
   font-weight: 700 !important;
   padding-bottom: .4rem !important;
-  border-bottom: 1px solid #eef0f3 !important;
+  border-bottom: 1px solid var(--border-color) !important;
 }
 
 .help-md h3 {
@@ -11275,13 +11275,13 @@ cdk-virtual-scroll-viewport {
 .help-md blockquote {
   margin: 1rem 0 !important;
   padding: .6rem 1rem !important;
-  border-left: 4px solid #e5e7eb !important;
-  background: #f9fafb !important;
+  border-left: 4px solid var(--border-color) !important;
+  background: var(--background-color) !important;
 }
 
 .help-md hr {
   border: 0 !important;
-  border-top: 1px solid #e5e7eb !important;
+  border-top: 1px solid var(--border-color) !important;
   margin: 1.25rem 0 !important;
 }
 
@@ -11294,13 +11294,13 @@ cdk-virtual-scroll-viewport {
 
 .help-md th,
 .help-md td {
-  border: 1px solid #e5e7eb !important;
+  border: 1px solid var(--border-color) !important;
   padding: 8px !important;
   vertical-align: top !important;
 }
 
 .help-md thead th {
-  background: #f3f4f6 !important;
+  background: var(--background-color) !important;
   font-weight: 600 !important;
 }
 

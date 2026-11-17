@@ -557,18 +557,29 @@
                                       @if (aname.errors.invalidIdentifier) {
                                         <div>{{ 'common.message.invalid' | translate }}</div>
                                       }
+                                      @if (aname.errors.incorrect) {
+                                        <div>{{ 'common.message.duplicateName' | translate }}</div>
+                                      }
                                     </div>
                                   }
                                 </div>
-                                <div class="col-md-6 col-lg-6 m-b-sm">
+                                <div class="col-md-6 col-lg-6 m-b-sm"
+                                     [ngClass]="{'has-error' : ((dVal.dirty || dVal.touched) && dVal.invalid)}">
                                   <label class="w-full">
-                                    <input (jsonValueTrigger)="openEditor(argument)" (keydown)="onKeyPress($event, 'default')"
+                                    <input #dVal="ngModel" (jsonValueTrigger)="openEditor(argument)" (keydown)="onKeyPress($event, 'default')"
                                            [(ngModel)]="argument.value" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
                                            [required]="argument.name && argument.name.length > 0" autocomplete="off" class="form-control"
                                            name="value{{i}}"
                                            placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
                                            type="text">
                                   </label>
+                                  @if (dVal.invalid && dVal.errors && (dVal.dirty || dVal.touched)) {
+                                    <div class="text-danger help-block">
+                                      @if (dVal.errors.required) {
+                                        <div>{{ 'common.message.requiredError' | translate }}</div>
+                                      }
+                                    </div>
+                                  }
                                   <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline"
                                      nzType="form" style="right: 13px;top:1px;"></i>
                                 </div>
@@ -675,6 +686,9 @@
                                     <div class="text-danger help-block">
                                       @if (ename.errors.invalidIdentifier) {
                                         <div>{{ 'common.message.invalid' | translate }}</div>
+                                      }
+                                      @if (ename.errors.incorrect) {
+                                        <div>{{ 'common.message.duplicateName' | translate }}</div>
                                       }
                                     </div>
                                   }
@@ -809,6 +823,9 @@
                                       @if (ename.errors.invalidIdentifier) {
                                         <div>{{ 'common.message.invalid' | translate }}</div>
                                       }
+                                      @if (ename.errors.incorrect) {
+                                        <div>{{ 'common.message.duplicateName' | translate }}</div>
+                                      }
                                     </div>
                                   }
                                 </div>
@@ -820,6 +837,9 @@
                                            type="text"/>
                                     @if (eVal.invalid && eVal.errors && (eVal.dirty || eVal.touched)) {
                                       <div class="text-danger help-block">
+                                        @if (eVal.errors.required) {
+                                          <div>{{ 'common.message.requiredError' | translate }}</div>
+                                        }
                                         @if (eVal.errors.invalidIdentifier) {
                                           <div>{{ 'common.message.invalid' | translate }}</div>
                                         }
@@ -937,18 +957,29 @@
                                       @if (aname.errors.invalidIdentifier) {
                                         <div>{{ 'common.message.invalid' | translate }}</div>
                                       }
+                                      @if (aname.errors.incorrect) {
+                                        <div>{{ 'common.message.duplicateName' | translate }}</div>
+                                      }
                                     </div>
                                   }
                                 </div>
-                                <div class="col-md-5 col-lg-5 m-b-sm">
+                                <div class="col-md-5 col-lg-5 m-b-sm"
+                                     [ngClass]="{'has-error' : ((jVal.dirty || jVal.touched) && jVal.invalid)}">
                                   <label class="w-full">
-                                    <input (jsonValueTrigger)="openEditor(argument)" (blur)="checkString(argument, 'value')" (keydown)="onKeyPress($event, 'jobArgument')"
+                                    <input #jVal="ngModel" (jsonValueTrigger)="openEditor(argument)" (blur)="checkString(argument, 'value')" (keydown)="onKeyPress($event, 'jobArgument')"
                                            [(ngModel)]="argument.value" [required]="argument.name && argument.name.length > 0" autocomplete="off"
                                            class="form-control"
                                            name="value{{i}}"
                                            placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
                                            type="text">
                                   </label>
+                                  @if (jVal.invalid && jVal.errors && (jVal.dirty || jVal.touched)) {
+                                    <div class="text-danger help-block">
+                                      @if (jVal.errors.required) {
+                                        <div>{{ 'common.message.requiredError' | translate }}</div>
+                                      }
+                                    </div>
+                                  }
                                   <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline"
                                      nzType="form" style="right: 13px;top:1px;"></i>
                                 </div>
@@ -1414,6 +1445,9 @@
                           <div class="text-danger help-block">
                             @if (aname.errors.invalidIdentifier) {
                               <div>{{ 'common.message.invalid' | translate }}</div>
+                            }
+                            @if (aname.errors.incorrect) {
+                              <div>{{ 'common.message.duplicateName' | translate }}</div>
                             }
                           </div>
                         }
