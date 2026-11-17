@@ -45,13 +45,13 @@
       "dataType": "STRING"
     },
     {
-      "$ref": "include/common/params_credential_store_file.json"
+      "$ref": "include/common/param_credential_store_file.json"
     },
     {
-      "$ref": "include/common/params_credential_store_key_file.json"
+      "$ref": "include/common/param_credential_store_key_file.json"
     },
     {
-      "$ref": "include/common/params_credential_store_entry_path.json"
+      "$ref": "include/common/param_credential_store_entry_path.json"
     }
   ],
   "returnVariables": [

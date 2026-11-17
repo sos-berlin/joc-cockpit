@@ -121,13 +121,13 @@
       "defaultValue": "application/octet-stream"
     },
     {
-      "$ref": "include/common/credential_store_file.json"
+      "$ref": "include/common/param_credential_store_file.json"
     },
     {
-      "$ref": "include/common/credential_store_key_file.json"
+      "$ref": "include/common/param_credential_store_key_file.json"
     },
     {
-      "$ref": "include/common/credential_store_entry_path.json"
+      "$ref": "include/common/param_credential_store_entry_path.json"
     }
   ],
   "returnVariables": []
