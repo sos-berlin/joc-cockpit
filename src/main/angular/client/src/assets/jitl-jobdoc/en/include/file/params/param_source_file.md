@@ -3,5 +3,5 @@
 
 Specifies the source file or directory for file operations.
 
-[](include:./note_param_mask_substitution.md)
+[](include:include/file/params/note_param_mask_substitution.md)
 </article>

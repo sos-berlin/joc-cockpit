@@ -11,5 +11,5 @@ If the expression matches the file name, then Capturing Groups will be replaced.
 
 - If no Capturing Groups are specified, then the entire match will be replaced.<br/>Example:<br/>*replacing* = `Hello`<br/>*replacement* = `1234`<br/>Input file: `Hello_World.txt`<br/>Output file: `1234_World.txt`
 
-[](include:./note_regexp_example_replace.md)
+[](include:include/file/notes/note_regexp_example_replace.md)
 </article>

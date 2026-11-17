@@ -1,0 +1,67 @@
+{
+  "job": {
+    "name": "PLSQLJob",
+    "category": "JITL",
+    "language": "Java",
+    "class": "com.sos.jitl.jobs.db.oracle.PLSQLJob"
+  },
+  "arguments": [
+    {
+      "name": "command",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "command_script_file",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "db_url",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "db_user",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "db_password",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "$ref": "include/sql/param_variable_parser_reg_expr.json"
+    },
+    {
+      "name": "resultset_as",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "result_file",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "$ref": "include/common/params_credential_store_file.json"
+    },
+    {
+      "$ref": "include/common/params_credential_store_key_file.json"
+    },
+    {
+      "$ref": "include/common/params_credential_store_entry_path.json"
+    }
+  ],
+  "returnVariables": [
+    {
+      "name": "sql_error",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "$ref": "include/sql/param_std_out_output.json"
+    }
+  ]
+}
