@@ -1,0 +1,5 @@
+{
+  "name": "exit_code",
+  "required": false,
+  "dataType": "STRING"
+}

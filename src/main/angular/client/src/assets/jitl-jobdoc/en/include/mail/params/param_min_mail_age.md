@@ -3,5 +3,5 @@
 
 Filters incoming mail by the minimum age of a mail. Newer mail will not be processed.
 
-[](include:../../common/notes/note_age_values.md)
+[](include:include/common/notes/note_age_values.md)
 </article>

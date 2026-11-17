@@ -1,0 +1,6 @@
+{
+  "name": "variable_parser_reg_expr",
+  "required": false,
+  "dataType": "STRING",
+  "defaultValue": "^SET\\s+([^\\s]+)\\s*IS\\s+(.*)$"
+}

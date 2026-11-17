@@ -1,4 +1,4 @@
-﻿# Job: CopyFileJob
+# Job: CopyFileJob
 <summary>
 Copies one or more files.
 </summary>
@@ -8,8 +8,8 @@ Copies one or more files.
 
 The job copies one or more files or directories.
 
-[](include:include/file/params/notes/note_file_operations.md)
-[](include:include/file/params/notes/description_result_set.md)
+[](include:include/file/notes/note_file_operations.md)
+[](include:include/file/notes/description_result_set.md)
 </detail>
 
 # Features
@@ -30,10 +30,10 @@ The job copies one or more files or directories.
 [](include:include/file/params/param_target_file.md)
 [](include:include/file/params/param_file_spec_fileop.md)
 [](include:include/file/params/param_recursive.md)
-[](include:include/file/params/param_max_file_age.md)
-[](include:include/file/params/param_max_file_size.md)
 [](include:include/file/params/param_min_file_age.md)
+[](include:include/file/params/param_max_file_age.md)
 [](include:include/file/params/param_min_file_size.md)
+[](include:include/file/params/param_max_file_size.md)
 [](include:include/file/params/param_skip_first_files.md)
 [](include:include/file/params/param_skip_last_files.md)
 [](include:include/file/params/param_create_dir.md)
@@ -49,5 +49,5 @@ The job copies one or more files or directories.
 
 # Return Variables
 
-[](include:include/file/params/params/return/param_fileoperations_result_set.md)
-[](include:include/file/params/params/return/param_fileoperations_result_set_size.md)
+[](include:include/file/params/return/param_fileoperations_result_set.md)
+[](include:include/file/params/return/param_fileoperations_result_set_size.md)
