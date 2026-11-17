@@ -8,6 +8,10 @@ import { HelpService, HelpRenderResult } from '../../services/help.service';
 import { CoreService } from '../../services/core.service';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
+import { JitlDocService } from '../../services/jitl-doc.service';
+
+/** Help keys with this prefix are JITL job documentation (./api/jitl-jobdoc) instead of help files. */
+export const JITL_DOC_KEY_PREFIX = 'jitl:';
 
 interface LinkValidationResult {
   url: string;
@@ -20,7 +24,7 @@ interface LinkValidationResult {
   standalone: false,
   selector: 'app-help-viewer',
   templateUrl: './help-viewer.component.html',
-  
+
 })
 export class HelpViewerComponent implements OnInit, OnDestroy {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -50,6 +54,7 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
   private searchMatches: { element: HTMLElement; originalHtml: string }[] = [];
   showSearchBar = false;
 
+  private userLanguage = 'en';
   private readonly destroy$ = new Subject<void>();
 
   constructor(
@@ -62,6 +67,7 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
     private translate: TranslateService,
     private readonly domSanitizer: DomSanitizer,
     private readonly cdr: ChangeDetectorRef,
+    private readonly jitlDoc: JitlDocService,
   ) {}
 
   ngOnInit(): void {
@@ -71,6 +77,7 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
 
     const userLanguage = this.preferences.locale || localStorage['$SOS$LANG'] || 'en';
+    this.userLanguage = userLanguage;
     this.help.setLanguage(userLanguage);
 
     this.loadHelp(this.helpKey, true);
@@ -437,7 +444,16 @@ onClick(e: MouseEvent): void {
   private loadHelp(key: string, restoreAnchor = false): void {
     this.isLoading = true;
     this.cdr.markForCheck();
-    this.help.getHelpHtml(key)
+    let isJitl = key?.startsWith(JITL_DOC_KEY_PREFIX);
+    let source$;
+    if (isJitl) {
+      let jitlKey = key.substring(JITL_DOC_KEY_PREFIX.length);
+      this.title = jitlKey;
+      source$ = this.jitlDoc.getJobHtml(jitlKey, this.userLanguage)
+    } else {
+      source$ = this.help.getHelpHtml(key);
+    }
+    source$
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => { this.isLoading = false; this.cdr.markForCheck(); })

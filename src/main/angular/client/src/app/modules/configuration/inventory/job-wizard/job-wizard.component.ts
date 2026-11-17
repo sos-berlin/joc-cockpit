@@ -14,6 +14,7 @@ import {isArray, isEqual, sortBy} from "underscore";
 import {debounceTime} from "rxjs/operators";
 import {Subject} from "rxjs";
 import {CoreService} from '../../../../services/core.service';
+import {JitlDocService} from '../../../../services/jitl-doc.service';
 import {InventoryObject} from "../../../../models/enums";
 import {JsonEditorComponent, JsonEditorOptions} from "ang-jsoneditor";
 import {NzMessageService} from "ng-zorro-antd/message";
@@ -2352,6 +2353,7 @@ export class ApiRequestDialogComponent {
 })
 export class JobWizardComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
+  private readonly jitlDocService = inject(JitlDocService);
   existingJob: any;
   node: any;
   index = 0;
@@ -2431,9 +2433,12 @@ export class JobWizardComponent {
   private getJitlJobs(): void {
     this.jobList = [];
     this.job = {};
-    this.coreService.post('inventory/wizard/jobs', {}).subscribe({
+    this.coreService.post('inventory/wizard/jobs', {
+      language: this.coreService.getDocumentationLanguage()
+    }).subscribe({
       next: (res: any) => {
         this.jobList = res.jobs;
+        this.coreService.setJitlJobs(res.jobs);
         this.loading = false;
         this.cdr.markForCheck();
       }, error: () => { this.loading = false; this.cdr.markForCheck(); }
@@ -2535,7 +2540,8 @@ export class JobWizardComponent {
 
   selectJob(job): void {
     this.coreService.post('inventory/wizard/job', {
-      assignReference: job.assignReference
+      assignReference: job.assignReference,
+      language: this.coreService.getDocumentationLanguage()
     }).subscribe((res) => {
       this.job = res;
       this.job.paramList = [];
@@ -2544,8 +2550,41 @@ export class JobWizardComponent {
       this.wizard.indeterminate = false;
       this.checkRequiredParam();
       this.isAnyRequiredVariable();
+      this.applyJitlDescriptions(this.job, job.assignReference);
       this.cdr.markForCheck();
     });
+  }
+
+  /**
+   * The descriptions of JITL jobs are Markdown now (the job description may still be HTML): render them first,
+   * then replace them by the texts of the job's Markdown file, whose includes are resolved.
+   */
+  private applyJitlDescriptions(job: any, name: string): void {
+    const params: any[] = Array.isArray(job?.params) ? job.params : [];
+    if (job?.description) {
+      job.description = this.jitlDocService.descriptionToHtml(job.description);
+    }
+    params.forEach(param => {
+      if (param?.description) {
+        param.description = this.jitlDocService.descriptionToHtml(param.description);
+      }
+    });
+    this.jitlDocService.getWizardDescriptions(name || job?.assignReference, this.coreService.getDocumentationLanguage())
+      .subscribe(docs => {
+        if (this.job !== job) {
+          return; // another job was selected meanwhile
+        }
+        if (docs.job) {
+          job.description = docs.job;
+        }
+        params.forEach(param => {
+          const html = param?.name ? docs.args.get(param.name) : undefined;
+          if (html) {
+            param.description = html;
+          }
+        });
+        this.cdr.markForCheck();
+      });
   }
 
   selectJobTemp(job): void {
