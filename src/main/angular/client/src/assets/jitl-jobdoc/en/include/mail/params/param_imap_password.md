@@ -3,7 +3,7 @@
 
 Specifies the password of the account connecting to the IMAP mail server.
 
-[](include:include/common/notes/note_param_order.md)
+[](include:include/mail/notes/note_param_order.md)
 
 - `mail.imap.password` from system properties
 - `mail.password` from job argument or order variable
