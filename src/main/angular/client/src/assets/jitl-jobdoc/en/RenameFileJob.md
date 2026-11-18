@@ -1,6 +1,6 @@
 # Job: RenameFileJob
 <summary>
-Renames one or more files.
+Renames files or directories.
 </summary>
 
 # Purpose

@@ -1,6 +1,6 @@
 ﻿# Job: FileNotExistsJob
 <summary>
-Checks if a file exists.
+Checks if a file or directory does not exist.
 </summary>
 
 # Purpose

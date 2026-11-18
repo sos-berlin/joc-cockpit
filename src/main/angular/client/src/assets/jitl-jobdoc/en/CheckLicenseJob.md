@@ -1,6 +1,6 @@
 # Job: CheckLicenseJob
 <summary>
-The job checks the expiration date of the JS7 license used by JOC Cockpit.
+Checks the expiration date of the JS7 license used by JOC Cockpit.
 </summary>
 
 # Purpose

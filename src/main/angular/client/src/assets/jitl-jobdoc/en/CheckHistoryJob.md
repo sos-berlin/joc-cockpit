@@ -1,6 +1,6 @@
 # Job: CheckHistoryJob
 <summary>
-The job checks the Order History or Task History for execution of predecessor workflows or jobs.
+Checks the Order History or Task History for execution of predecessor workflows or jobs.
 </summary>
 
 # Purpose

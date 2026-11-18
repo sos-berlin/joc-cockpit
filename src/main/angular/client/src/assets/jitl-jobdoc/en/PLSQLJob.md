@@ -1,6 +1,6 @@
 # Job: PLSQLJob
 <summary>
-The job executes PL/SQL statements.
+Executes PL/SQL statements.
 </summary>
 
 # Purpose
@@ -72,11 +72,7 @@ If the same return variable is set more than once, then the last assignment will
 
 # Arguments
 
-## Argument: hibernate_configuration_file
-<article id="hibernate_configuration_file">
-
 [](include:include/common/params/param_hibernate_configuration_file.md)
-</article>
 
 ## Argument: command
 <article id="command">

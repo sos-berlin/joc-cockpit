@@ -1,0 +1,5 @@
+{
+  "name": "request",
+  "required": true,
+  "dataType": "STRING"
+}
