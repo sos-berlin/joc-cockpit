@@ -1,0 +1,51 @@
+{
+  "job": {
+    "name": "SetJobResourceJob",
+    "category": "JITL",
+    "language": "Java",
+    "class": "com.sos.jitl.jobs.inventory.SetJobResourceJob"
+  },
+  "arguments": [
+    {
+      "name": "job_resource",
+      "required": true,
+      "dataType": "STRING"
+    },
+    {
+      "name": "key",
+      "required": true,
+      "dataType": "STRING"
+    },
+    {
+      "name": "value",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "file",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "encipherment_certificate",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "time_zone",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "environment_variable",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "controller_id",
+      "required": false,
+      "dataType": "STRING"
+    }
+  ],
+  "returnVariables": []
+}
