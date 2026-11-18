@@ -2439,12 +2439,20 @@ export class JobWizardComponent {
       language: this.coreService.getDocumentationLanguage()
     }).subscribe({
       next: (res: any) => {
-        this.jobList = res.jobs;
-        this.coreService.setJitlJobs(res.jobs);
+        this.jobList = Array.isArray(res.jobs) ? res.jobs : [];
+        this.jobList.forEach(item => this.setJavaClass(item));
+        this.coreService.setJitlJobs(this.jobList);
         this.loading = false;
         this.cdr.markForCheck();
       }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
+  }
+
+  /** The API renamed "javaClass" to "class": the GUI keeps using "javaClass" and accepts both names. */
+  private setJavaClass(item: any): void {
+    if (item && item.class) {
+      item.javaClass = item.class;
+    }
   }
 
   private getJobTemplates(): void {
@@ -2546,6 +2554,7 @@ export class JobWizardComponent {
       language: this.coreService.getDocumentationLanguage()
     }).subscribe((res) => {
       this.job = res;
+      this.setJavaClass(this.job);
       this.job.paramList = [];
       this.wizard.setOfCheckedValue = new Set<string>();
       this.wizard.checked = false;
