@@ -745,6 +745,8 @@ export class AgentComponent {
     mapOfCheckedId: new Set()
   }
   subscription: Subscription;
+  private refreshTimer: any;
+  private clusterRequestId = 0;
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
@@ -781,12 +783,17 @@ export class AgentComponent {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    clearTimeout(this.refreshTimer);
+    this.destroyEditor();
+  }
+
+  private destroyEditor(): void {
     try {
       if (this.editor) {
         this.editor.destroy();
         mxOutline.prototype.destroy();
         this.editor = null;
-        $('.mxTooltip').css({visibility: 'hidden'})
+        $('.mxTooltip').css({visibility: 'hidden'});
       }
     } catch (e) {
       console.error(e);
@@ -807,12 +814,11 @@ export class AgentComponent {
   }
 
   private refreshView(): void {
-    if ((!this.isActionMenuVisible && this.object.mapOfCheckedId.size === 0)) {
-      this.getClusters();
+    clearTimeout(this.refreshTimer);
+    if (!this.isActionMenuVisible && this.object.mapOfCheckedId.size === 0) {
+      this.refreshTimer = setTimeout(() => this.getClusters(), 300);
     } else {
-      setTimeout(() => {
-        this.refreshView();
-      }, 750);
+      this.refreshTimer = setTimeout(() => this.refreshView(), 750);
     }
   }
 
@@ -846,12 +852,18 @@ export class AgentComponent {
   }
 
   private getClusters(cb?): void {
+    const requestId = ++this.clusterRequestId;
     this.coreService.post('agents/cluster', {
       controllerId: this.controllerId,
       agentIds: [this.agentId]
     }).subscribe({
       next: (data: any) => {
         if (cb) cb();
+        if (requestId !== this.clusterRequestId) {
+          this.isLoading = false;
+          this.cdr.markForCheck();
+          return; // a newer request is on its way; ignore this outdated response
+        }
         this.clusters = data.subagentClusters;
         if (this.selectedCluster.subagentClusterId) {
           let isFound = false;
@@ -864,6 +876,9 @@ export class AgentComponent {
           }
           if (!isFound && this.selectedCluster.ordering !== undefined) {
             this.backToListView();
+          } else if (isFound && !cb && this.editor && this.editor.graph) {
+            this.updateCluster(); // redraw the detail view with the fresh data
+            this.updateList();
           }
         }
         this.isLoading = false;
@@ -1130,12 +1145,22 @@ export class AgentComponent {
             timeSpent: result.timeSpent,
             ticketLink: result.ticketLink
           };
-          this.coreService.post('agents/cluster/deploy', obj).subscribe(() => this.reset());
+          this.postDeploy(obj);
         }
       });
     } else {
-      this.coreService.post('agents/cluster/deploy', obj).subscribe(() => this.reset());
+      this.postDeploy(obj);
     }
+  }
+
+  private postDeploy(obj: any): void {
+    this.coreService.post('agents/cluster/deploy', obj).subscribe({
+      next: () => {
+        this.reset();
+        this.refreshView();
+      },
+      error: () => this.reset()
+    });
   }
 
   deploy(cluster): void {
@@ -1168,11 +1193,11 @@ export class AgentComponent {
               timeSpent: result.timeSpent,
               ticketLink: result.ticketLink
             };
-            this.coreService.post('agents/cluster/deploy', obj).subscribe(() => this.reset());
+            this.postDeploy(obj);
           }
         });
       } else {
-        this.coreService.post('agents/cluster/deploy', obj).subscribe(() => this.reset());
+        this.postDeploy(obj);
       }
     }
   }
@@ -1221,7 +1246,7 @@ export class AgentComponent {
 
   backToListView(): void {
     this.selectedCluster = {};
-    this.ngOnDestroy();
+    this.destroyEditor();
   }
 
   sortByDrop(event: CdkDragDrop<string[]>, subagents: any[]): void {

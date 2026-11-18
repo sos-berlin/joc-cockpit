@@ -1582,31 +1582,6 @@ export class CoreService {
   }
 
   /**
-   * Loads the JITL job names (API inventory/wizard/jobs) once per session, so that showDocumentation()
-   * can recognise JITL documentation references synchronously. Only for accounts that may view the inventory,
-   * otherwise the request would fail with an error message; those accounts keep the old documentation page.
-   */
-  preloadJitlJobs(): void {
-    if (!this.jitlDocService.needsJobs()) {
-      return;
-    }
-    let permission: any = {};
-    try {
-      permission = JSON.parse(this.authService.permission || '{}') || {};
-    } catch (e) {
-      permission = {};
-    }
-    if (!permission.joc?.inventory?.view) {
-      return;
-    }
-    this.jitlDocService.markJobsRequested();
-    this.post('inventory/wizard/jobs', {language: this.getDocumentationLanguage()}).subscribe({
-      next: (res: any) => this.jitlDocService.setJobs(res?.jobs),
-      error: () => { /* keep the old documentation behaviour */ }
-    });
-  }
-
-  /**
    * Language of help pages and JITL job documentation (same order as HelpViewerComponent).
    * Sent as "language" to inventory/wizard/jobs and inventory/wizard/job; the API falls back to en.
    */
@@ -1626,12 +1601,45 @@ export class CoreService {
   }
 
   showDocumentation(path: string, preferences: any): void {
-    // Migrated JITL job documentation is shown like a help page; everything else keeps the old behaviour.
+    // JITL job documentation is shown like a help page; everything else keeps the old behaviour.
     const jitlJob = this.jitlDocService.findJob(path);
     if (jitlJob) {
       this.openHelpPage(JITL_DOC_KEY_PREFIX + jitlJob.name);
       return;
     }
+    if (this.needsJitlJobList(path)) {
+      // A job name can only be identified with the JITL job list: load it once, then decide.
+      this.jitlDocService.loadJobs(this.getDocumentationLanguage()).subscribe(() => {
+        const job = this.jitlDocService.findJob(path);
+        if (job) {
+          this.openHelpPage(JITL_DOC_KEY_PREFIX + job.name);
+        } else {
+          this.openDocumentationWindow(path, preferences);
+        }
+      });
+      return;
+    }
+    this.openDocumentationWindow(path, preferences);
+  }
+
+  /**
+   * The JITL job list is needed for a plain name (no path) as long as it is not loaded. Only for accounts that may
+   * view the inventory: for others the API inventory/wizard/jobs fails, they keep the old documentation page.
+   */
+  private needsJitlJobList(path: string): boolean {
+    if (!path || typeof path !== 'string' || path.includes('/') || this.jitlDocService.hasJobList()) {
+      return false;
+    }
+    let permission: any = {};
+    try {
+      permission = JSON.parse(this.authService.permission || '{}') || {};
+    } catch (e) {
+      permission = {};
+    }
+    return !!permission.joc?.inventory?.view;
+  }
+
+  private openDocumentationWindow(path: string, preferences: any): void {
     const link = window.location.origin + '/joc/api/documentation/show?documentation=' + encodeURIComponent(path) + '&accessToken=' + this.authService.accessTokenId;
     let win;
     if (preferences.isDocNewWindow === 'newWindow') {
