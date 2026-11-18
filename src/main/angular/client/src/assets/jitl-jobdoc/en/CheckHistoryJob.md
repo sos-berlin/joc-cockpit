@@ -37,7 +37,7 @@ The outcome of the job can be used in subsequent *Retry Instructions* in a workf
 ## Argument: query
 <article id="query">
 
-Specifies the query to be executed by the job. Queries determine 
+Specifies the query to be executed by the job. Queries determine
 
 - the history status of orders or jobs:
   - completed: the order or job completed successfully or failed

@@ -23,11 +23,11 @@ All *mail.\** properties for Java Mail can be used, see [JavaMail](https://javae
 
 Specifies the e-mail address of mail recipient(s). A number of e-mail addresses can be specified separated by comma or semicolon.
 </article>
-             
+
 ## Argument: from
 <article id="from">
 
-Specifies the e-mail address used to send mail. 
+Specifies the e-mail address used to send mail.
 </article>
 
 ## Argument: from_name
@@ -39,8 +39,7 @@ Specifies the free-text name of the account that sends mail.
 ## Argument: reply_to
 <article id="reply_to">
 
-If no replies should be accepted, then typically an e-mail address such as 
-`no-reply@example.com` is used for the respective domain.
+If no replies should be accepted, then typically an e-mail address such as `no-reply@example.com` is used for the respective domain.
 Otherwise a valid e-mail address can be specified to receive replies.
 </article>
 
@@ -64,7 +63,7 @@ Specifies the mail subject, it is recommended using ASCII 7bit characters.
 
 ## Argument: body
 <article id="body">
-              
+
 Specifies the mail body as plain text or HTML depending on the *content_type* setting.
 </article>
 

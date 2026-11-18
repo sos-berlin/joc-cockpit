@@ -27,7 +27,7 @@ If the argument value is empty and the *report_folders* argument value is empty,
 ## Argument: report_folders
 <article id="report_folders">
 
-Specifies the list of folders holding reports reports that should be created. Folder names are seperated by semicolon. 
+Specifies the list of folders holding reports reports that should be created. Folder names are seperated by semicolon.
 
 A folder is processed recursively if the name ends with /\*.
 

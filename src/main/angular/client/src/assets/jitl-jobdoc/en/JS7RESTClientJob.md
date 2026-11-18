@@ -21,7 +21,7 @@ The job offers access to the [JS7 REST Web Service API](https://kb.sos-berlin.co
 The argument specifies the request in JSON format that holds the following key elements:
 - *endpoint*: the endpoint of the API.<br/>Example: If you want to execute a REST request to `http://localhost:2101/joc/api/orders/add`, then the endpoint will be `/orders/add`.
 - *method*: in most cases the `POST` method is used.
-- *headers*: HTTP headers are used applicable to the related *endpoint*. 
+- *headers*: HTTP headers are used applicable to the related *endpoint*.
 - *body*: the request body/payload for the API indictaed by the *endpoint*.
 
 **Example**

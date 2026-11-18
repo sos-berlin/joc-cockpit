@@ -25,9 +25,9 @@ The job does not use arguments to specify its processing mode. Instead, users ca
 
 - Job arguments that are not assigned a value are considered optional for the incoming file. Respective return variables are created only if the incoming file provides the variable. This includes that the incoming file specifies an empty value for the variable.
 
-- Job arguments that are assigned a value are considered optional. 
+- Job arguments that are assigned a value are considered optional.
   - If the incoming file does not provide the variable, then a return variable with the job's default value is created.
-  - If the incoming file provides a variable optionally with an empty value, then a return variable with the value from the incoming file's variable is created.  
+  - If the incoming file provides a variable optionally with an empty value, then a return variable with the value from the incoming file's variable is created.
 - For pairs of names/values for which no arguments are specified the job will raise an error.
 
 Example of an incoming file:
