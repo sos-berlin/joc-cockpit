@@ -3,7 +3,7 @@
 
 Specifies if SSL connections to the IMAP mail server are enabled.
 
-[](include:include/common/notes/note_param_order.md)
+[](include:include/mail/notes/note_param_order.md)
 
 - `mail.imap.ssl.enable` from system properties
 </article>
