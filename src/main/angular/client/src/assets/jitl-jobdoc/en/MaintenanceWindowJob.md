@@ -48,13 +48,13 @@ Specifies the Controller ID of the given Controller or Agent.
 ## Argument: controller_host
 <article id="controller_host">
 
-Specifies the Controller instance host name for which the indicated *state* should be enforced. 
+Specifies the Controller instance host name for which the indicated *state* should be enforced.
 </article>
 
 ## Argument: joc_host
 <article id="joc_host">
 
-Specifies the JOC Cockpit host name for which the indicated *state* should be enforced. 
+Specifies the JOC Cockpit host name for which the indicated *state* should be enforced.
 </article>
 
 ## Argument: subagent_ids
@@ -62,7 +62,7 @@ Specifies the JOC Cockpit host name for which the indicated *state* should be en
 
 Specifies the list of Subagent IDs for which the indicted *state* should be enforced.
 
-List entries are separated by semicolon. 
+List entries are separated by semicolon.
 </article>
 
 ## Argument: agent_ids
@@ -70,7 +70,7 @@ List entries are separated by semicolon.
 
 Specifies the list of Agent IDs for which the indicted *state* should be enforced.
 
-List entries are separated by semicolon. 
+List entries are separated by semicolon.
 </article>
 
 

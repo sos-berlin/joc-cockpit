@@ -27,7 +27,7 @@ The *dbms_output.put_line()* function in PL/SQL is used to write output like thi
             end;
 ```
 
-The argument holds the default value `"^SET\s+([^\s]+)\s*IS\s+(.*)$"`. The expression matches the output `SET hello IS world` and creates the *hello* workflow variable with the `world` value. 
+The argument holds the default value `"^SET\s+([^\s]+)\s*IS\s+(.*)$"`. The expression matches the output `SET hello IS world` and creates the *hello* workflow variable with the `world` value.
 
 Example for alternative expression:
 

@@ -4,9 +4,9 @@
 Specifies processing of the response provided by the Web Service and creates return variables. JS7 ships with [jackson-jq](https://github.com/eiiches/jackson-jq) tbat allows selecting elements from a JSON response.
 
 The argument value is in JSON format and specifies an array of JSON objects holding two keys:
-                                             
+
 - *name*: The name of the return variable that will receive the value extracted from the response using the jq query indicated by the *path* key.
-- *path*: The jq query used to extract a value from the JSON response. 
+- *path*: The jq query used to extract a value from the JSON response.
   - the value resulting from the query is assigned a dynamic return variable specified from its *name*.
   - Optionally, the key may also contain file output instructions in the format:<br/>`[jq-query] || [processing-instruction] [file-path]`<br/>If `||` is present, it can indicate that the query result should be written to a file. In this case, the processing instruction and file path must be provided. Supported processing instructions include:
 

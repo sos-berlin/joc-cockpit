@@ -23,7 +23,7 @@ The job checks the existence of a file, of a directory or of files inside a dire
 
 [](include:include/file/params/param_file_spec_fileop.md)
 [](include:include/file/params/param_recursive.md)
-[](include:include/file/params/param_source_file.md)            
+[](include:include/file/params/param_source_file.md)
 [](include:include/file/params/param_max_file_age.md)
 [](include:include/file/params/param_max_file_size.md)
 [](include:include/file/params/param_min_file_age.md)
@@ -35,7 +35,6 @@ The job checks the existence of a file, of a directory or of files inside a dire
 [](include:include/file/params/result_set/param_result_set_file.md)
 [](include:include/file/params/result_set/param_expected_size_of_result_set.md)
 [](include:include/file/params/result_set/param_raise_error_if_result_set_is.md)
-
 
 # Return Variables
 

@@ -25,7 +25,7 @@ If at least one matching file is found then the job will terminate and an error 
 
 [](include:include/file/params/param_file_spec_fileop.md)
 [](include:include/file/params/param_recursive.md)
-[](include:include/file/params/param_source_file.md)            
+[](include:include/file/params/param_source_file.md)
 [](include:include/file/params/param_max_file_age.md)
 [](include:include/file/params/param_max_file_size.md)
 [](include:include/file/params/param_min_file_age.md)
