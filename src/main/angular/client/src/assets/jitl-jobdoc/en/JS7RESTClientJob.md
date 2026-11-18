@@ -1,6 +1,6 @@
 # Job: JS7RESTClientJob
 <summary>
-The job is used to execute REST requests with JOC Cockpit.
+Executes REST requests to JOC Cockpit.
 </summary>
 
 # Purpose
@@ -49,23 +49,25 @@ The argument specifies the request in JSON format that holds the following key e
 ```
 </article>
 
+[](include:include/rest/params/param_return_variable.md)
+[](include:include/rest/params/param_log_items.md)
+[](include:include/rest/params/param_url.md)
+[](include:include/rest/params/param_username.md)
+[](include:include/rest/params/param_password.md)
+[](include:include/rest/params/param_client_id.md)
+[](include:include/rest/params/param_client_secret.md)
+[](include:include/rest/params/param_encipherment_private_key_path.md)
+[](include:include/rest/params/param_keystore_file.md)
+[](include:include/rest/params/param_keystore_alias.md)
+[](include:include/rest/params/param_keystore_password.md)
+[](include:include/rest/params/param_keystore_key_password.md)
+[](include:include/rest/params/param_truststore_file.md)
+[](include:include/rest/params/param_truststore_password.md)
+
+[](include:include/common/params/param_credential_store_file.md)
+[](include:include/common/params/param_credential_store_key_file.md)
+[](include:include/common/params/param_credential_store_entry_path.md)
+
 # Return Variables
 
-## Return Variable: return_variable
-<article id="return_variable">
-
-Specifies processing of the response provided by the Web Service. JS7 ships with [jackson-jq](https://github.com/eiiches/jackson-jq) tbat allows selecting elements form a JSON response.
-
-The argument value is in JSON format and specifies an array of JSON objects holding two keys:
-                                             
-- *name*: The name of the variable that will receive the value extracted from the response using the jq query carried by the *path* key.
-- *path*: The jq query used to extract a value from the JSON response. 
-  - the value resulting from the query is assigned a dynamic workflow variable specified from its *name*.
-  - Optionally, the key may also contain file output instructions in the format:<br/>`[jq-query] || [processing-instruction] [file-path]`
-<br/>If `||` is present, it can indicate that the query result should be written to a file. In this case, the processing instruction and file path must be provided. Supported processing instructions are:
-
-- `>`: overwrites the file with the query result.
-- `>>`: appends the query result to the file.
-
-Note: There must be at least one space between the processing instruction and the file path. 
-</article>
+The job creates return variables as specified by the *return_variable* argument.

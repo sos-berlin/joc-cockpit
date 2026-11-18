@@ -1,12 +1,12 @@
 # Job: MailInboxJob
 <summary>
-The job reads a mail inbox for incoming mail.
+Reads an inbox for incoming mail.
 </summary>
 
 # Purpose
 <detail>
 
-The job reads a mail inbox and provides actions for incoming mail. The actions to be executed for incoming mail are specified with the *mail_action* argument.
+The job reads an inbox and provides actions for incoming mail. The actions to be executed for incoming mail are specified with the *mail_action* argument.
 
 Any general *mail.\**, POP3 *mail.pop3.\** and IMAP *mail.imap.\** properties for Java Mail can be used for connections to mail servers. For details see
 

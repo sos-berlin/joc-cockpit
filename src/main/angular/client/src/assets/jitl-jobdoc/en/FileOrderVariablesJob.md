@@ -1,6 +1,6 @@
 # Job: FileOrderVariablesJob
 <summary>
-The job is used to read variables from incoming files.
+Creates dynamic variables from incoming files.
 </summary>
 
 # Purpose

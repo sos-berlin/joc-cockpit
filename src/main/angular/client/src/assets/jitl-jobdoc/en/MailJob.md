@@ -1,6 +1,6 @@
 # Job: MailJob
 <summary>
-The job is used to send mail.
+Sends mail.
 </summary>
 
 # Purpose

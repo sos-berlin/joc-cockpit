@@ -1,6 +1,6 @@
 # Job: MonitoringJob
 <summary>
-The job performs health checks of JS7 JOC Cockpit, Controller and Agents.
+Performs health checks of JOC Cockpit, Controller and Agents.
 </summary>
 
 # Purpose

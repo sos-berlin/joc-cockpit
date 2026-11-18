@@ -1,0 +1,5 @@
+{
+  "name": "encipherment_private_key_path",
+  "required": false,
+  "dataType": "STRING"
+}

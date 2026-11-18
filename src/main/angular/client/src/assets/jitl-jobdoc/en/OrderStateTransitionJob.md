@@ -1,6 +1,6 @@
 # Job: OrderStateTransitionJob
 <summary>
-The job is used to transition order states.
+Transitions order states.
 </summary>
 
 # Purpose
