@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {TranslateService} from '@ngx-translate/core';
 import {Observable, forkJoin, of} from 'rxjs';
-import {catchError, map, shareReplay, switchMap} from 'rxjs/operators';
+import {catchError, finalize, map, shareReplay, switchMap} from 'rxjs/operators';
 import {MarkdownParserService} from './markdown-parser.service';
 import {HelpRenderResult} from './help.service';
 import {AuthService} from '../components/guard';
@@ -25,11 +25,15 @@ export interface JitlJob {
 export class JitlDocService {
   /** Served by the JOC server like the help files (./api/help-files), requires the access token. */
   private readonly basePath = './api/jitl-jobdoc';
-  private readonly jitlDocFolder = /^\/sos\/jitl-jobs\/([^/]+?)(\.xml)?$/i;
+  /** docPath of the API inventory/wizard/jobs: "sos/jitl-jobs/<name>.md" (former "/sos/jitl-jobs/<name>.xml"). */
+  private readonly jitlDocFolder = /^\/?sos\/jitl-jobs\/([^/.]+)(\.(md|xml))?$/i;
   private readonly maxIncludeDepth = 6;
   /** Lower-case job name -> job, filled from the API inventory/wizard/jobs. */
   private readonly jobs = new Map<string, JitlJob>();
-  private jobsRequested = false;
+  /** True once a response of inventory/wizard/jobs was stored (also when it was empty). */
+  private jobsLoaded = false;
+  /** Running request of loadJobs(), shared by all callers until it completes. */
+  private jobsRequest$: Observable<boolean> | null = null;
   private readonly fileCache = new Map<string, Observable<string | null>>();
 
   constructor(
@@ -51,20 +55,40 @@ export class JitlDocService {
         this.jobs.set(name.toLowerCase(), {name, class: job.javaClass});
       }
     }
+    this.jobsLoaded = true;
   }
 
-  /** Whether the job list was requested already (it is loaded only once per session). */
-  needsJobs(): boolean {
-    return !this.jobsRequested && this.jobs.size === 0;
+  /** Whether the job list is known, i.e. findJob() can decide on a job name without loading it. */
+  hasJobList(): boolean {
+    return this.jobsLoaded;
   }
 
-  markJobsRequested(): void {
-    this.jobsRequested = true;
+  /**
+   * Loads the job list (API inventory/wizard/jobs) once per session. Callers during a running request share it.
+   * Emits true when the list is available, false when the request failed (a later call tries again).
+   */
+  loadJobs(language: string): Observable<boolean> {
+    if (this.jobsLoaded) {
+      return of(true);
+    }
+    if (!this.jobsRequest$) {
+      this.jobsRequest$ = this.http.post('inventory/wizard/jobs', {language}).pipe(
+        map((res: any) => {
+          this.setJobs(res?.jobs);
+          this.jobsLoaded = true; // also for a response without jobs: do not request again
+          return true;
+        }),
+        catchError(() => of(false)),
+        finalize(() => this.jobsRequest$ = null),
+        shareReplay(1)
+      );
+    }
+    return this.jobsRequest$;
   }
 
   /**
    * Returns the JITL job when the documentation reference belongs to a JITL job:
-   *  - "/sos/jitl-jobs/<name>.xml" (docPath of the Job Wizard), or
+   *  - "sos/jitl-jobs/<name>.md" or "/sos/jitl-jobs/<name>.xml" (docPath), only .md, .xml or no extension, or
    *  - "<name>" when it is a known JITL job name (assignReference; stored as documentationName of jobs).
    * Synchronous: returns null when the reference is unknown, then the caller keeps the old behaviour.
    */
@@ -242,17 +266,21 @@ export class JitlDocService {
 
   /**
    * Replaces lines of the form [](include:path) with the content of the referenced Markdown file.
-   * Paths are relative to the including file, must stay inside the base folder and must point to .md files.
+   * Paths are relative to the language folder of the including file (e.g. "include/common/notes/x.md" -> "en/include/...");
+   * paths starting with "./" or "../" are relative to the including file. They must stay inside the base folder
+   * and must point to .md files.
    */
   private resolveIncludes(text: string, filePath: string, lang: string, depth: number, visited: Set<string>): Observable<string> {
     const includeRe = /^[ \t]*\[\]\(include:([^)\s]+)\)[ \t]*$/;
+    const langFolder = filePath.split('/')[0];
     const lines = text.split('\n');
     const parts = lines.map(line => {
       const m = line.match(includeRe);
       if (!m) {
         return of(line);
       }
-      const target = this.normalizePath(m[1], filePath);
+      const fileRelative = /^\.\.?\//.test(m[1]);
+      const target = this.normalizePath(m[1], fileRelative ? filePath : `${langFolder}/`);
       if (!target || !/\.md$/i.test(target) || depth >= this.maxIncludeDepth || visited.has(target)) {
         return of(this.missingInclude(m[1]));
       }
@@ -402,7 +430,10 @@ export class JitlDocService {
         rows.push(`| *${this.cell(item.name)}* | | | |`);
         continue;
       }
-      const name = item.name ? `[${this.cell(item.name)}](#${encodeURIComponent(item.name)})` : '';
+      // The parser would render the link text "max_file_size" as "max<em>file</em>size". Backslash escapes do not help:
+      // table cells drop them before the inline rendering, so _ and * are written as character references.
+      const name = item.name
+        ? `[${this.cell(item.name).replace(/_/g, '&#95;').replace(/\*/g, '&#42;')}](#${encodeURIComponent(item.name)})` : '';
       const required = item.required === true ? t('common.label.yes') : (item.required === false ? t('common.label.no') : '');
       const def = item.defaultValue !== undefined && item.defaultValue !== null && item.defaultValue !== ''
         ? '`' + String(item.defaultValue).replace(/`/g, '') + '`' : '';
