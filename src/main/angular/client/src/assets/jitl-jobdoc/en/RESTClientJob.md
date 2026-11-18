@@ -7,9 +7,9 @@ Executes REST requests to 3rd-party web services.
 <detail>
 
 The job executes REST requests to 3rd-party web services using
- 
+
 - Authentication
-  - Basic Authentication (username and password base64-encoded) 
+  - Basic Authentication (username and password base64-encoded)
   - OIDC Client Credential Authentication
 - Protocols HTTP or HTTPS
 

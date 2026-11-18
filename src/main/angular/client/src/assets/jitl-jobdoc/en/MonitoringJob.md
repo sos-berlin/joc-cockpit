@@ -17,7 +17,7 @@ The job can be used as a building block in a monitoring solution to
 - repeatedly run the job using a Cycle Instruction,
 - forward health check results to a monitoring solution.
   - This can include forwarding health check report files when used with a user's monitoring solution.
-  . This can include sending mail to SOS indicating a notice or an alert. 
+  - This can include sending mail to SOS indicating a notice or an alert.
   - Such notices do not include any data related to the user's JS7 environment, they indicate a notice or alert only.
 
 The job makes use of the JS7 REST Web Service API to retrieve information from the JOC Cockpit.
@@ -38,8 +38,8 @@ By default the current Controller is used.
 ## Argument: monitor_report_dir
 <article id="monitor_report_dir">
 
-Specifies the directory to which the job will store health status report files (.json). 
-The directory must exist prior to running the job and must be in reach of the Agent that runs the job. 
+Specifies the directory to which the job will store health status report files (.json).
+The directory must exist prior to running the job and must be in reach of the Agent that runs the job.
 
 - An absolute or relative path can be specified.
 - An expression can be used, for example `env('JS7_AGENT_DATA') ++ '/monitor'`
@@ -56,7 +56,7 @@ Older report files will be removed when the value is exceeded.
 ## Argument: max_failed_orders
 <article id="max_failed_orders">
 
-Specifies the maximum number of failed orders that are considered acceptable for a health status check. 
+Specifies the maximum number of failed orders that are considered acceptable for a health status check.
 If this number is exceeded then the resulting return variable will carry a non-zero value indicating a failed health status check.
 
 By default the number of failed orders is not considered for successful/unsuccessful health status checks.
@@ -73,7 +73,7 @@ Specifies the e-mail address that is used to send mail for notices and alerts. T
 ## Return Variable: monitor_report_date
 <article id="monitor_report_date">
 
-Provides the date and time for which the health status check has been performed. 
+Provides the date and time for which the health status check has been performed.
 
 The date format is yyyy-MM-dd.HH-mm-ss.K, for example `2022-07-31.23-12-59.Z` indicating UTC time.
 </article>
@@ -81,7 +81,7 @@ The date format is yyyy-MM-dd.HH-mm-ss.K, for example `2022-07-31.23-12-59.Z` in
 ## Return Variable: monitor_report_file
 <article id="monitor_report_file">
 
-Provides he path to the report file created for the health status check.	                    
+Provides he path to the report file created for the health status check.
 </article>
 
 ## Return Variable: subject

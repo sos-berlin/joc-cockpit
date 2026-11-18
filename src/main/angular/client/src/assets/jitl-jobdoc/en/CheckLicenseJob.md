@@ -6,7 +6,7 @@ Checks the expiration date of the JS7 license used by JOC Cockpit.
 # Purpose
 <detail>
 
-Users of the commercial license receive warnings and errors about license expiration from the JOC Cockpit GUI. Users who whish to receive e-mail notification about upcoming license expiration and expired licenses can make use of the job.            
+Users of the commercial license receive warnings and errors about license expiration from the JOC Cockpit GUI. Users who whish to receive e-mail notification about upcoming license expiration and expired licenses can make use of the job.
 
 Return Codes:
 

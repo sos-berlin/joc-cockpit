@@ -27,7 +27,7 @@ The JS7 encryption feature includes that
 
 Specifies the input value that should be encrypted, typically a secret.
 
-One of the arguments *in* or *infile* must be specified.                    
+One of the arguments *in* or *infile* must be specified.
 </article>
 
 ## Argument: infile
@@ -49,8 +49,8 @@ The argument is used if *infile* is specified.
 ## Argument: encipherment_certificate
 <article id="encipherment_certificate">
 
-Specifies the path to the CA signed or self-signed X.509 certificate. Alternatively, the path to the public key file can be specified.          
-The argument is frequently provided via a job resource that is managed with the Encryption Key Management.                          
+Specifies the path to the CA signed or self-signed X.509 certificate. Alternatively, the path to the public key file can be specified.
+The argument is frequently provided via a job resource that is managed with the Encryption Key Management.
 </article>
 
 # Return Variables

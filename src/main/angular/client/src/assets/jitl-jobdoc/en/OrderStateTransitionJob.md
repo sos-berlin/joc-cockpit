@@ -32,11 +32,11 @@ By default the current Controller is used.
 
 Specifies the state of orders that should be transitioned. Possible values include `pending`, `failed`, `suspended`, `waiting`, `inprogress`, `scheduled`, `prompting`.
 
-- Values can be specified in uppercase, lowercase or mixed letters. 
-- Values can be specified from a semicolon separated list. Each state in the list is handled separately, for example    
+- Values can be specified in uppercase, lowercase or mixed letters.
+- Values can be specified from a semicolon separated list. Each state in the list is handled separately.
 
 Use with Transitions:
-                  
+
 - The `continue` transition for prompting orders will move orders to the `in progress` state and possibly to the `running` state,
 - The `continue` transition for suspended orders will put orders to the state they had before being suspended.
 </article>

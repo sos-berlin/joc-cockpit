@@ -105,7 +105,7 @@ Specifies the time zone that will be applied to date calculation if a Java date 
 
 The time zone is specified from a string, for example `GMT`, `Europe/London`. Valid time zone strings as explained with [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 
-If the argument is omitted, then the time zone will be used the Agent is operated for.                    
+If the argument is omitted, then the time zone will be used the Agent is operated for.
 </article>
 
 ## Argument: environment_variable
@@ -113,7 +113,7 @@ If the argument is omitted, then the time zone will be used the Agent is operate
 
 Job Resources hold workflow variables and matching environment variables for use with JVM jobs and shell jobs.
 
-The argument specifies the name of the environment variable that should be created or updated in the Job Resource and that will be populated from a reference to the variable indicated by the *key* argument. 
+The argument specifies the name of the environment variable that should be created or updated in the Job Resource and that will be populated from a reference to the variable indicated by the *key* argument.
 </article>
 
 ## Argument: controller_id

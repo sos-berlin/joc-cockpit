@@ -111,11 +111,11 @@ Alternative Sources
 
 - The JDBC URL can be retrieved from a Credential Store by use of the `cs://path/entry@url` syntax.
 - The JDBC URL, account and password for can be provide from a file specified with the *hibernate_configuration_file* argument.
-</article>           
+</article>
 
 ## Argument: db_user
 <article id="db_user">
- 
+
 Specifies the user accocunt for access to the database.
 
 - The database user account can be retrieved from a Credential Store by use of the `cs://path/entry@user` syntax.
@@ -124,7 +124,7 @@ Specifies the user accocunt for access to the database.
 
 ## Argument: db_password
 <article id="db_password">
- 
+
 Specifies the password for access to the database.
 
 - The database password can be retrieved from a Credential Store by use of the `cs://path/entry@password` syntax.
@@ -138,11 +138,11 @@ Specifies the password for access to the database.
 
 Specifies the path to the output file that will hold the result set in csv, xml or json format.
 
-The argument is required by the *resultset_as* argument when used with the `csv`, `xml` or `json` value 
-</article>            
+The argument is required by the *resultset_as_variables* argument when used with the `csv`, `xml` or `json` value.
+</article>
 
-## Argument: resultset_as
-<article id="resultset_as">
+## Argument: resultset_as_variables
+<article id="resultset_as_variables">
 
 Specifies the output format when a result set is stored to a file using the *output_file* argument.
 
@@ -153,17 +153,17 @@ Assume the the following query:
 ```
 SELECT first_name, last_name, age FROM persons
 ```
-                   
+
 ### Argument Value: empty
 
 With an empty value for the *resultset_as* argument, tabular output is written to the job log like this:
 
 | first_name | last_name | age |
-| :--- | :--- | :--- | 
+| :--- | :--- | :--- |
 | John | Doe | 30 |
 | Hans | Mustermann | 33 |
 | Jean | Dupont | 56 |
-                      
+
 ### Argument Value: csv
 
 If set to `csv`, the column names and column values of the result set will be written to the file specified with the *output_file* argument enclosed with double quotes and separated by a comma.
@@ -198,7 +198,7 @@ If set to `xml`, the column names and column values of the result set will be wr
 If set to `json`, the column names and column values of the result set will be written to the file specified with the *output_file* argument.
 
 ```
-[ 
+[
   {
     "FIRST_NAME" : "John",
     "LAST_NAME" : "Doe",
