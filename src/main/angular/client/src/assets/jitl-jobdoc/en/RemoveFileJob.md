@@ -1,6 +1,6 @@
 # Job: RemoveFileJob
 <summary>
-Removes one or more files.
+Removes files or directories.
 </summary>
 
 # Purpose

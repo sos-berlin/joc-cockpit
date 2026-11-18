@@ -1,0 +1,5 @@
+{
+  "name": "truststore_file",
+  "required": false,
+  "dataType": "STRING"
+}

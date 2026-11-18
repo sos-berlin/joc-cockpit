@@ -1,12 +1,12 @@
 # Job: MaintenanceWindowJob
 <summary>
-The job enables/disables JS7 products during a Maintenance Window.
+Enables/disables JS7 products for maintenance windows.
 </summary>
 
 # Purpose
 <detail>
 
-The job enables/disables JS7 products during a Maintenance Window. it enforces the specified state for the given Controller and/or JOC Cockpit instances, Agents and Subagents.
+The job enables/disables JS7 products for a maintenance window. it enforces the specified state for the given Controller and/or JOC Cockpit instances, Agents and Subagents.
 
 The job considers Controller instances, JOC Cockpit instances, Agents and Subagents as specified.
 </detail>
@@ -20,18 +20,18 @@ Specifies the resulting state for the given Controller, JOC Cockpit or Agent.
 
 Possible values are (case-insensitive):
 
-- active
-- incactive
+- `active`
+- `incactive`
 
 ### Actions
-
-**Controller**
-
-If the given Controller instance in a cluster is not assigned the specified *state*, then a switch-over will be performed.
 
 **JOC Cockpit**
 
 If the given JOC Cockpit instance in a cluster is not assigned the specified *state*, then a switch-over will be performed.
+
+**Controller**
+
+If the given Controller instance in a cluster is not assigned the specified *state*, then a switch-over will be performed.
 
 **Agent**
 
@@ -76,4 +76,4 @@ List entries are separated by semicolon.
 
 # Return Variables
 
-The job does not provide return variables
+The job does not provide return variables.

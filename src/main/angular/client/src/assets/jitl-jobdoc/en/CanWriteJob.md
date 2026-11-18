@@ -1,6 +1,6 @@
 # Job: CanWriteJob
 <summary>
-Checks if a file is writable.
+Checks if a file is writeable.
 </summary>
 
 # Purpose

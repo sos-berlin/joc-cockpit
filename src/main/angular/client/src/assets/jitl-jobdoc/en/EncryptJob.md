@@ -1,6 +1,6 @@
 # Job: EncryptJob
 <summary>
-The job encrypts a secret (plain text string) or a file and returns variables holding information for later decryption.
+Cncrypts a secret (plain text string) or a file and returns variables holding information for later decryption.
 </summary>
 
 # Purpose

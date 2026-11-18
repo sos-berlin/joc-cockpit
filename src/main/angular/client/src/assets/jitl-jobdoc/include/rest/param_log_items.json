@@ -1,0 +1,6 @@
+{
+  "name": "log_items",
+  "required": false,
+  "dataType": "STRING",
+  "defaultValue": "request:body"
+}

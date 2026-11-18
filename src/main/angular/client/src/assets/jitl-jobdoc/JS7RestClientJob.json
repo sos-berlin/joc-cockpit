@@ -7,14 +7,49 @@
   },
   "arguments": [
     {
-      "name": "request",
-      "required": true,
-      "dataType": "STRING"
+      "$ref": "include/rest/param_request.json"
     },
     {
-      "name": "return_variable",
-      "required": false,
-      "dataType": "STRING"
+      "$ref": "include/rest/param_return_variable.json"
+    },
+    {
+      "$ref": "include/rest/param_log_items.json"
+    },
+    {
+      "$ref": "include/rest/param_url.json"
+    },
+    {
+      "$ref": "include/rest/param_username.json"
+    },
+    {
+      "$ref": "include/rest/param_password.json"
+    },
+    {
+      "$ref": "include/rest/param_client_id.json"
+    },
+    {
+      "$ref": "include/rest/param_client_secret.json"
+    },
+    {
+      "$ref": "include/rest/param_encipherment_private_key_path.json"
+    },
+    {
+      "$ref": "include/rest/param_keystore_file.json"
+    },
+    {
+      "$ref": "include/rest/param_keystore_alias.json"
+    },
+    {
+      "$ref": "include/rest/param_keystore_password.json"
+    },
+    {
+      "$ref": "include/rest/param_keystore_key_password.json"
+    },
+    {
+      "$ref": "include/rest/param_truststore_file.json"
+    },
+    {
+      "$ref": "include/rest/param_truststore_password.json"
     }
   ],
   "returnVariables": []
