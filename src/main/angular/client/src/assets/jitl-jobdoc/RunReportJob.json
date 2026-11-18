@@ -1,0 +1,21 @@
+{
+  "job": {
+    "name": "RunReportJob",
+    "category": "JITL",
+    "language": "Java",
+    "class": "com.sos.jitl.jobs.runreports.RunReportJob"
+  },
+  "arguments": [
+    {
+      "name": "report_paths",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "report_folders",
+      "required": false,
+      "dataType": "STRING"
+    }
+  ],
+  "returnVariables": []
+}
