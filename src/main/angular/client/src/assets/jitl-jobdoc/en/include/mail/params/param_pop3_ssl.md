@@ -3,7 +3,7 @@
 
 Specifies if SSL connections to the POP3 mail server are enabled.
 
-[](include:include/common/notes/note_param_order.md)
+[](include:include/mail/notes/note_param_order.md)
 
 - `mail.pop3.ssl.enable` from system properties
 </article>

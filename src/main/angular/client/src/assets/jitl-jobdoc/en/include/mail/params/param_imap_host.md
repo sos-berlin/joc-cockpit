@@ -3,7 +3,7 @@
 
 Specifies the IMAP mail server host.
 
-[](include:include/common/notes/note_param_order.md)
+[](include:include/mail/notes/note_param_order.md)
 
 - `mail.imap.host` from system properties
 - `mail.host` from job argument or order variable
