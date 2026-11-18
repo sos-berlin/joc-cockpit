@@ -1,0 +1,48 @@
+{
+  "job": {
+    "name": "SQLExecutorJob",
+    "category": "JITL",
+    "language": "Java",
+    "class": "com.sos.jitl.jobs.db.SQLExecutorJob"
+  },
+  "arguments": [
+    {
+      "$ref": "include/common/param_hibernate_configuration_file.json"
+    },
+    {
+      "name": "command",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "resultset_as_warning",
+      "required": false,
+      "dataType": "BOOLEAN"
+    },
+    {
+      "name": "exec_returns_resultset",
+      "required": false,
+      "dataType": "BOOLEAN"
+    },
+    {
+      "name": "result_file",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "resultset_as_variables",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "$ref": "include/common/param_credential_store_file.json"
+    },
+    {
+      "$ref": "include/common/param_credential_store_key_file.json"
+    },
+    {
+      "$ref": "include/common/param_credential_store_entry_path.json"
+    }
+  ],
+  "returnVariables": []
+}

@@ -1,6 +1,6 @@
 # Job: PLSQLJob
 <summary>
-Executes PL/SQL statements.
+Executes PL/SQL statements in Oracle databases.
 </summary>
 
 # Purpose
@@ -8,13 +8,13 @@ Executes PL/SQL statements.
 
 ## What is the purpose of this job?
 
-The job executes PL/SQL statements by JDBC.
+The job executes PL/SQL statements in Oracle databases using JDBC.
 
 ## How is the job script defined?
 
 SQL statements can be stored to a file that is specified by the *command_script_file* argument. In addition, they can be specified with the *command* argument.
 
-Before SQL statements are executed, they are checked for placeholders that should be substituted. Placeholders that reference order variables are replaced by the oder variable's value.
+Before SQL statements are executed, they are checked for placeholders that should be substituted. Placeholders that reference variables are replaced by the variable's value.
 
 The following syntax for use with SQL statements is supported: `${variable}`
 
@@ -81,8 +81,7 @@ The argument holds SQL statements that are executed by the job.
 
 It is possible to specify more than one SQL statement with the argument. Such SQL statements are carried out in the specified order and must be separated by semicolon and a subsequent new line.
 
-Placeholders in SQL statements are substituted by the job. This is achieved by embedding a workflow variable using the syntax `${variable}`
-in the SQLstatement. On execution of the job the *variable* is substituted for its current value.
+Placeholders in SQL statements are substituted by the job. This is achieved by embedding a workflow variable using the syntax `${variable}` in the SQLstatement. On execution of the job the *variable* is substituted by its current value.
 
 One of the *command* or *command_script_file* arguments must be used.
 </article>
@@ -134,20 +133,28 @@ Specifies the password for access to the database.
 
 [](include:include/sql/params/param_variable_parser_reg_expr.md)
 
+## Argument: result_file
+<article id="result_file">
+
+Specifies the path to the output file that will hold the result set in csv, xml or json format.
+
+The argument is required by the *resultset_as* argument when used with the `csv`, `xml` or `json` value 
+</article>            
+
 ## Argument: resultset_as
 <article id="resultset_as">
 
 Specifies the output format when a result set is stored to a file using the *output_file* argument.
 
 Possible values include `csv`, `xml`, `json` and an empty value.
-                   
-### Argument Value: empty
 
 Assume the the following query:
 
 ```
 SELECT first_name, last_name, age FROM persons
 ```
+                   
+### Argument Value: empty
 
 With an empty value for the *resultset_as* argument, tabular output is written to the job log like this:
 
@@ -210,14 +217,6 @@ If set to `json`, the column names and column values of the result set will be w
 ]
 ```
 </article>
-
-## Argument: result_file
-<article id="result_file">
-
-Specifies the path to the output file that will hold the result set in csv, xml or json format.
-
-The argument is required by the *resultset_as* argument when used with the `csv`, `xml` or `json` value 
-</article>            
 
 [](include:include/common/params/param_credential_store_file.md)
 [](include:include/common/params/param_credential_store_key_file.md)

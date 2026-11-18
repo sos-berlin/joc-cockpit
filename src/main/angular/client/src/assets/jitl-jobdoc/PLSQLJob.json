@@ -35,12 +35,12 @@
       "$ref": "include/sql/param_variable_parser_reg_expr.json"
     },
     {
-      "name": "resultset_as",
+      "name": "result_file",
       "required": false,
       "dataType": "STRING"
     },
     {
-      "name": "result_file",
+      "name": "resultset_as",
       "required": false,
       "dataType": "STRING"
     },
