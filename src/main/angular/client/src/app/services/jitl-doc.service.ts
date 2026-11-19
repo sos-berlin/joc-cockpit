@@ -25,8 +25,10 @@ export interface JitlJob {
 export class JitlDocService {
   /** Served by the JOC server like the help files (./api/help-files), requires the access token. */
   private readonly basePath = './api/jitl-jobdoc';
-  /** docPath of the API inventory/wizard/jobs: "sos/jitl-jobs/<name>.md" (former "/sos/jitl-jobs/<name>.xml"). */
-  private readonly jitlDocFolder = /^\/?sos\/jitl-jobs\/([^/.]+)(\.(md|xml))?$/i;
+  /** docPath of the APIs inventory/wizard/jobs|job: "/jitl-jobdoc/<name>.md" (former "sos/jitl-jobs/<name>.md", "/sos/jitl-jobs/<name>.xml"). */
+  private readonly jitlDocFolder = /^\/?(?:sos\/jitl-jobs|jitl-jobdoc)\/([^/.]+)(\.(md|xml))?$/i;
+  /** docName of the APIs: "<name>.md" (former "<name>.xml"). */
+  private readonly jitlDocName = /^([^/.]+)\.(md|xml)$/i;
   private readonly maxIncludeDepth = 6;
   /** Lower-case job name -> job, filled from the API inventory/wizard/jobs. */
   private readonly jobs = new Map<string, JitlJob>();
@@ -52,7 +54,7 @@ export class JitlDocService {
     for (const job of jobs) {
       const name = typeof job?.assignReference === 'string' ? job.assignReference.trim() : '';
       if (name) {
-        this.jobs.set(name.toLowerCase(), {name, class: job.javaClass});
+        this.jobs.set(name.toLowerCase(), {name, class: job.class || job.javaClass});
       }
     }
     this.jobsLoaded = true;
@@ -88,8 +90,9 @@ export class JitlDocService {
 
   /**
    * Returns the JITL job when the documentation reference belongs to a JITL job:
-   *  - "sos/jitl-jobs/<name>.md" or "/sos/jitl-jobs/<name>.xml" (docPath), only .md, .xml or no extension, or
-   *  - "<name>" when it is a known JITL job name (assignReference; stored as documentationName of jobs).
+   *  - "/jitl-jobdoc/<name>.md", "sos/jitl-jobs/<name>.md" or "/sos/jitl-jobs/<name>.xml" (docPath), only .md, .xml or no extension, or
+   *  - "<name>" when it is a known JITL job name (assignReference; stored as documentationName of jobs), or
+   *  - "<name>.md" or "<name>.xml" when <name> is a known JITL job name (docName; stored as documentationName of job templates).
    * Synchronous: returns null when the reference is unknown, then the caller keeps the old behaviour.
    */
   findJob(reference: string): JitlJob | null {
@@ -101,7 +104,46 @@ export class JitlDocService {
     if (pathMatch) {
       return this.jobs.get(pathMatch[1].toLowerCase()) || {name: pathMatch[1]};
     }
-    return ref.includes('/') ? null : (this.jobs.get(ref.toLowerCase()) || null);
+    if (ref.includes('/')) {
+      return null;
+    }
+    const nameMatch = ref.match(this.jitlDocName);
+    return this.jobs.get(ref.toLowerCase()) || (nameMatch && this.jobs.get(nameMatch[1].toLowerCase())) || null;
+  }
+
+  /**
+   * The API inventory/wizard/job returns the arguments of JITL jobs with "dataType" (STRING, BOOLEAN, INTEGER, ...)
+   * and "defaultValue" (former "type": String|Boolean|Number and "default", as used by job templates):
+   * converts an argument in place to the former fields, an argument with the former fields is not changed.
+   */
+  normalizeArgument(arg: any): any {
+    if (!arg || typeof arg !== 'object') {
+      return arg;
+    }
+    if (arg.dataType !== undefined) {
+      if (arg.type === undefined) {
+        arg.type = this.toArgumentType(arg.dataType);
+      }
+      delete arg.dataType;
+    }
+    if (arg.defaultValue !== undefined) {
+      if (arg.default === undefined) {
+        arg.default = arg.defaultValue;
+      }
+      delete arg.defaultValue;
+    }
+    return arg;
+  }
+
+  private toArgumentType(dataType: any): string {
+    const type = typeof dataType === 'string' ? dataType.trim().toUpperCase() : '';
+    if (type === 'BOOLEAN') {
+      return 'Boolean';
+    }
+    if (/(INTEGER|NUMBER)$/.test(type)) {
+      return 'Number';
+    }
+    return 'String';
   }
 
   getJobHtml(name: string, requestedLang: string): Observable<HelpRenderResult | null> {
