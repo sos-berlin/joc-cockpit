@@ -1,0 +1,5 @@
+{
+  "name": "strict_hostkey_checking",
+  "required": false,
+  "dataType": "BOOLEAN"
+}

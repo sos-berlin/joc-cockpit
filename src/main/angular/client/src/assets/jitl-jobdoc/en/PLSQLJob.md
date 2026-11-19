@@ -10,9 +10,9 @@ Executes PL/SQL statements in Oracle databases.
 
 The job executes PL/SQL statements in Oracle databases using JDBC.
 
-## How is the job script defined?
+## How are SQL statements processed?
 
-SQL statements can be stored to a file that is specified by the *command_script_file* argument. In addition, they can be specified with the *command* argument.
+SQL statements can be stored to a file that is specified by the *command_script_file* argument. Alternatively, they can be specified from the *command* argument.
 
 Before SQL statements are executed, they are checked for placeholders that should be substituted. Placeholders that reference variables are replaced by the variable's value.
 
@@ -55,6 +55,7 @@ begin
   dbms_output.put_line('set variable2 is value2');
 end;
 ```
+
 ## Example: Specifying return variables
 
 If the job or order carries the *table_name* argument with the `JOC_VARIABLES` value, then later select statements are substituted to `select count(*) into howmany from JOC_VARIABLES;`
@@ -156,7 +157,7 @@ SELECT first_name, last_name, age FROM persons
 
 ### Argument Value: empty
 
-With an empty value for the *resultset_as* argument, tabular output is written to the job log like this:
+With an empty value for the *resultset_as_variables* argument, tabular output is written to the job log like this:
 
 | first_name | last_name | age |
 | :--- | :--- | :--- |

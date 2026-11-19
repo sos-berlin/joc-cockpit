@@ -1,0 +1,5 @@
+{
+  "name": "raise_exception_on_error",
+  "required": false,
+  "dataType": "BOOLEAN"
+}

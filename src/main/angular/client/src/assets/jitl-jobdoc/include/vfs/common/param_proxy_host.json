@@ -1,0 +1,5 @@
+{
+  "name": "proxy_host",
+  "required": false,
+  "dataType": "STRING"
+}

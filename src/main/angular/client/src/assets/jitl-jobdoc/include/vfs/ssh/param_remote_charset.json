@@ -1,0 +1,6 @@
+{
+  "name": "remote_charset",
+  "required": false,
+  "dataType": "STRING",
+  "defaultValue": "UTF-8"
+}

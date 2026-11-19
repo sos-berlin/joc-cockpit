@@ -1,0 +1,132 @@
+{
+  "job": {
+    "name": "SSHJob",
+    "category": "JITL",
+    "language": "Java",
+    "class": "com.sos.jitl.jobs.ssh.SSHJob"
+  },
+  "arguments": [
+    {
+      "$ref": "include/vfs/common/param_host.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_port.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_connect_timeout.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_auth_method.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_preferred_authentications.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_required_authentications.json"
+    },
+    {
+      "$ref": "include/vfs/common/param_user.json"
+    },
+    {
+      "$ref": "include/vfs/common/param_password.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_auth_file.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_passphrase.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_socket_timeout.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_server_alive_interval.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_strict_hostkey_checking.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_remote_charset.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_simulate_shell.json"
+    },
+    {
+      "$ref": "include/vfs/common/param_credential_store_file.json"
+    },
+    {
+      "$ref": "include/vfs/common/param_credential_store_key_file.json"
+    },
+    {
+      "$ref": "include/vfs/common/param_credential_store_password.json"
+    },
+    {
+      "$ref": "include/vfs/common/param_credential_store_entry_path.json"
+    },
+    {
+      "$ref": "include/vfs/common/param_proxy_host.json"
+    },
+    {
+      "$ref": "include/vfs/common/param_proxy_port.json"
+    },
+    {
+      "$ref": "include/vfs/common/param_proxy_user.json"
+    },
+    {
+      "$ref": "include/vfs/common/param_proxy_password.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_command.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_command_script.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_command_script_file.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_command_script_param.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_command_delimiter.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_ignore_error.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_ignore_stderr.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_raise_exception_on_error.json"
+    },
+    {
+      "$ref": "include/vfs/ssh/param_exit_codes_to_ignore.json"
+    },
+    {
+      "name": "tmp_dir",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "create_env_vars",
+      "required": false,
+      "dataType": "BOOLEAN"
+    },
+    {
+      "name": "pre_command",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "post_command_read",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "post_command_delete",
+      "required": false,
+      "dataType": "STRING"
+    }
+  ],
+  "returnVariables": []
+}

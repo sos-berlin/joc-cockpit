@@ -1,0 +1,5 @@
+{
+  "name": "passphrase",
+  "required": false,
+  "dataType": "STRING"
+}
