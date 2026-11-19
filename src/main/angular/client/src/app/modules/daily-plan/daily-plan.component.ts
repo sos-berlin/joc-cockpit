@@ -902,6 +902,7 @@ export class DailyPlanComponent {
 
   ngOnInit(): void {
     this.initConf();
+    this.openRequestedCriticalPath();
     if (this.pageView === 'grid') {
       this.isToggle = true;
     }
@@ -2683,7 +2684,7 @@ export class DailyPlanComponent {
     this.cdr.markForCheck();
   }
 
-  /** JOC-2343: Critical Path to open when switching between Dependencies (tab 2) and Timeline (tab 3) */
+  /** JOC-2343: Critical Path to open when switching between Dependencies (tab 1) and Timeline (tab 2) */
   dependenciesFocusPath: string | null = null;
   timelineFocusPath: string | null = null;
 
@@ -2691,14 +2692,31 @@ export class DailyPlanComponent {
   onSwitchView(e: { view: 'dependencies' | 'timeline'; path: string }): void {
     if (e.view === 'timeline') {
       this.timelineFocusPath = e.path;
-      this.dailyPlanFilters.tabIndex = 3;
+      this.dailyPlanFilters.tabIndex = 2;
     } else {
       this.dependenciesFocusPath = e.path;
       this.isParentLoaded = true;
-      this.dailyPlanFilters.tabIndex = 2;
+      this.dailyPlanFilters.tabIndex = 1;
     }
     this.cdr.markForCheck();
-    // reset, so that switching to the same Critical Path again is recognised as a change
+    this.resetFocusPaths();
+  }
+
+  private openRequestedCriticalPath(): void {
+    const request = this.dailyPlanFilters?.criticalPath;
+    if (!request) {
+      return;
+    }
+    delete this.dailyPlanFilters.criticalPath;
+    if (request.view === 'timeline') {
+      this.timelineFocusPath = request.path;
+    } else {
+      this.dependenciesFocusPath = request.path;
+    }
+    this.resetFocusPaths();
+  }
+
+  private resetFocusPaths(): void {
     setTimeout(() => {
       this.timelineFocusPath = null;
       this.dependenciesFocusPath = null;
@@ -2712,11 +2730,12 @@ export class DailyPlanComponent {
     this.isTabSwitching = true;
     const tabIndex = $event?.index ?? 0;
 
+    // tabs: 0 Daily Plan, 1 Dependencies, 2 Timeline, 3 Projection
     if (tabIndex === 0) {
       this.reloadDailyPlan();
-    } else if (tabIndex === 1) {
+    } else if (tabIndex === 3) {
       this.changeInCalendar();
-    } else if (tabIndex === 2) {
+    } else if (tabIndex === 1) {
       if (!this.isParentLoaded) {
         this.isParentLoaded = true;
       }
@@ -2752,7 +2771,7 @@ export class DailyPlanComponent {
     if (localStorage['views']) {
       this.pageView2 = JSON.parse(localStorage['views']).dailyPlanDep;
     }
-    if (this.dailyPlanFilters.tabIndex !== 0 && this.dailyPlanFilters.tabIndex !== 2) {
+    if (this.dailyPlanFilters.tabIndex !== 0 && this.dailyPlanFilters.tabIndex !== 1) {
       this.changeInCalendar();
     } else {
       this.reloadDailyPlan();

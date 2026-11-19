@@ -36,7 +36,6 @@
         <button type="button" class="cpg-tool" (click)="fit()" [appRichTooltip]="'workflow.button.fitToScreen' | translate">
           <i nz-icon nzTheme="outline" nzType="column-width"></i>
         </button>
-        <span class="cpg-hint">{{ 'dailyPlan.dependencies.graph.hint' | translate }}</span>
         @if (isPartial) {
           <span class="cpg-shown">{{ 'dailyPlan.dependencies.label.stepsShown' | translate: {shown: shownWorkflows, total: totalWorkflows} }}</span>
         }
@@ -44,24 +43,6 @@
           <button type="button" class="btn btn-grey btn-xs m-l-sm" (click)="collapse()">
             <i nz-icon nzType="shrink" nzTheme="outline"></i> {{ 'dailyPlan.dependencies.graph.collapse' | translate }}
           </button>
-        }
-      </div>
-      <div class="cpg-legend">
-        @for (cls of edgeClasses; track cls) {
-          <span class="cpg-legend-item">
-            <svg width="26" height="10" aria-hidden="true">
-              <line x1="1" y1="5" x2="25" y2="5" class="cpg-edge" [ngClass]="'cpg-edge-' + cls"></line>
-            </svg>
-            {{ 'dailyPlan.dependencies.graph.legend.' + cls | translate }}
-          </span>
-        }
-        @if (hasFold) {
-          <span class="cpg-legend-item">
-            <svg width="26" height="10" aria-hidden="true">
-              <line x1="1" y1="5" x2="25" y2="5" class="cpg-edge cpg-edge-fold"></line>
-            </svg>
-            {{ 'dailyPlan.dependencies.graph.legend.fold' | translate }}
-          </span>
         }
       </div>
     </div>

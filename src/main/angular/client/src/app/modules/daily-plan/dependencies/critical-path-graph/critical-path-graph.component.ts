@@ -70,7 +70,7 @@ interface ClusterInfo {
 
 interface LayoutNode {
   id: string;
-  type: 'wf' | 'board' | 'cluster' | 'fold';
+  type: 'wf' | 'board' | 'cluster' | 'fold' | 'waypoint';
   layer: number;
   x: number;
   y: number;
@@ -109,6 +109,29 @@ interface EdgeSpec {
   trunk?: boolean;
 }
 
+interface PortEntry {
+  key: EdgeSpec | 'trunk';
+  y: number;
+  lane: number;
+}
+
+interface Leg {
+  g: number;          
+  key: string;        
+  ya: number;         
+  yb: number;         
+  turn: boolean;      
+  soft: boolean;      
+  junction: boolean;  
+}
+
+interface Turn {
+  ya: number;         
+  lo: number;         
+  hi: number;
+  exits: number[];    
+}
+
 const WF_W = 240;
 const WF_H = 52;
 const BOARD_W = 200;
@@ -126,12 +149,29 @@ const END_KEEP = 5;
 const LEAF_LIMIT = 4;
 const LEAF_KEEP = 2;
 const FRESH_MS = 4000;
-const TRUNK_GAP = 28;
 const WINDOW_MARGIN = 400;
 const FALLBACK_W = 1600;
 const EDGE_PAD = 12;
 const SIMPLE_SCALE = 0.45;
 const SIMPLE_MIN_NODES = 150;
+const LANE_TOP = 24;
+const LANE_GAP = 12;
+const LANE_AREA_MAX = 360;
+const SLOT_IN = 10;
+const SLOT_ARROW = 20;
+const SLOT_GAP = 12;
+const SLOT_MIN = 8;
+const SLOT_GAP_MAX = 200;
+const SIDE_GAP = 40;
+const CORNER = 8;
+const STRAIGHT = 0.5;
+const SOFT_TURN = 8;
+const PORT_GAP = 12;
+const PORT_MARGIN = 8;
+const WAYPOINT_H = 2;
+const WAYPOINT_GAP = 6;
+const WAYPOINT_MARGIN = 10;
+const WAYPOINT_LIMIT = 10000;
 const EDGE_CLASSES = ['posted', 'expected', 'announced', 'impossible', 'optional'];
 const MARKER_CLASSES = [...EDGE_CLASSES, 'fold'];
 
@@ -161,7 +201,6 @@ export class CriticalPathGraphComponent implements OnChanges, AfterViewInit, OnD
   viewport?: ElementRef<HTMLDivElement>;
 
   readonly uid = 'cpg' + (++instanceCounter);
-  readonly edgeClasses = EDGE_CLASSES;
   readonly markerClasses = MARKER_CLASSES;
 
   nodes: LayoutNode[] = [];
@@ -173,7 +212,6 @@ export class CriticalPathGraphComponent implements OnChanges, AfterViewInit, OnD
   viewportHeight = MIN_HEIGHT;
   totalWorkflows = 0;
   shownWorkflows = 0;
-  hasFold = false;
   hoverId: string | null = null;
   private hotEdges = new Set<string>();
   private nearNodes = new Set<string>();
@@ -433,7 +471,6 @@ export class CriticalPathGraphComponent implements OnChanges, AfterViewInit, OnD
     }
     const hidden = ordered.filter(w => !visible.has(w.path));
     this.shownWorkflows = visible.size;
-    this.hasFold = hidden.length > 0;
 
     const boardOf = new Map(d.boards.map(b => [b.name, b]));
     const linksOf = new Map<string, CriticalPathGraphLink[]>();
@@ -577,27 +614,244 @@ export class CriticalPathGraphComponent implements OnChanges, AfterViewInit, OnD
         n.layer = p.length ? Math.min(...p) + 1 : r.length ? Math.min(...r) - 1 : 0;
       }
     });
+    const all = Array.from(byId.values());
+    const columns = this.assignColumns(all);
+    const chains = this.addWaypoints(specs, columns);
+    const waypoints: LayoutNode[] = [];
+    chains.forEach(chain => waypoints.push(...chain));
+
     const neighbours = new Map<string, LayoutNode[]>();
     const link = (a: LayoutNode, b: LayoutNode) => {
       (neighbours.get(a.id) || neighbours.set(a.id, []).get(a.id)).push(b);
       (neighbours.get(b.id) || neighbours.set(b.id, []).get(b.id)).push(a);
     };
-    specs.forEach(s => link(s.from, s.to));
+    specs.forEach(s => {
+      const way = [s.from, ...(chains.get(s) || []), s.to];
+      for (let k = 0; k + 1 < way.length; k++) {
+        link(way[k], way[k + 1]);
+      }
+    });
     neighbourPairs.forEach(([a, b]) => link(a, b));
 
-    const all = Array.from(byId.values());
-    this.placeNodes(all, neighbours);
-    this.width = Math.max(...all.map(n => n.x + n.w)) + PAD;
-    this.height = Math.max(...all.map(n => n.y + n.h)) + PAD;
-    this.viewportHeight = Math.max(MIN_HEIGHT, Math.min(MAX_HEIGHT, this.height + 2));
+    this.placeRows(columns, neighbours);
+    this.straightenWaypoints(columns, chains);
     foldedReceivers.forEach((wfs, board) => byId.get('b:' + board).foldedReceivers = wfs.size);
     this.nodes = all;
+    this.edges = this.routeEdges(specs, waypoints.length ? [...all, ...waypoints] : all, chains, foldNode);
+    this.viewportHeight = Math.max(MIN_HEIGHT, Math.min(MAX_HEIGHT, this.height + 2));
+    this.updateWindow(true);
+  }
 
-    const feeders = new Set(specs.filter(s => s.trunk && s.from.x + s.from.w < s.to.x - TRUNK_GAP));
-    const junction = foldNode && feeders.size >= 2 ? {x: foldNode.x - TRUNK_GAP, y: foldNode.y + foldNode.h / 2} : null;
-    this.edges = specs.map((s, i) => {
+  private routeEdges(specs: EdgeSpec[], all: LayoutNode[], chains: Map<EdgeSpec, LayoutNode[]>,
+                     foldNode: LayoutNode | undefined): LayoutEdge[] {
+    let cols = 0;
+    let bottom = -Infinity;
+    all.forEach(n => {
+      cols = Math.max(cols, n.layer + 1);
+      bottom = Math.max(bottom, n.y + n.h);
+    });
+    const back = specs.filter(s => s.to.layer <= s.from.layer);
+
+    const laneOf = new Map<EdgeSpec, number>();
+    const lanes: { l: number; r: number }[][] = [];
+    back.map((s, i) => ({s, i, l: s.to.layer - 1, r: s.from.layer}))
+      .sort((a, b) => (a.r - a.l) - (b.r - b.l) || a.l - b.l || a.i - b.i)
+      .forEach(e => {
+        let lane = lanes.findIndex(used => used.every(u => u.r < e.l || e.r < u.l));
+        if (lane < 0) {
+          lane = lanes.push([]) - 1;
+        }
+        lanes[lane].push(e);
+        laneOf.set(e.s, lane);
+      });
+
+    const feeders = new Set(specs.filter(s => s.trunk && s.to.layer > s.from.layer));
+    const hasTrunk = !!foldNode && feeders.size >= 2;
+    const entries = new Map<LayoutNode, PortEntry[]>();
+    const enter = (n: LayoutNode, e: PortEntry) => (entries.get(n) || entries.set(n, []).get(n)).push(e);
+    specs.forEach(s => {
+      if (!(hasTrunk && feeders.has(s))) {
+        const chain = chains.get(s);
+        const from = chain?.length ? chain[chain.length - 1] : s.from;
+        enter(s.to, {key: s, y: from.y + from.h / 2, lane: laneOf.has(s) ? laneOf.get(s) : -1});
+      }
+    });
+    if (hasTrunk) {
+      enter(foldNode, {key: 'trunk', y: foldNode.y + foldNode.h / 2, lane: -1});
+    }
+    const portY = new Map<EdgeSpec | 'trunk', number>();
+    entries.forEach((list, n) => {
+      list.sort((a, b) => a.lane < 0 && b.lane < 0 ? a.y - b.y : a.lane < 0 ? -1 : b.lane < 0 ? 1 : b.lane - a.lane);
+      const step = list.length > 1 ? Math.min(PORT_GAP, (n.h - 2 * PORT_MARGIN) / (list.length - 1)) : 0;
+      const mid = n.y + n.h / 2;
+      list.forEach((e, j) => portY.set(e.key, mid + (j - (list.length - 1) / 2) * step));
+    });
+    const trunkY = hasTrunk ? portY.get('trunk') : 0;
+
+    const legsOf = new Map<EdgeSpec, Leg[]>();
+    const turns = new Map<number, Map<string, Turn>>();
+    specs.forEach((s, i) => {
+      if (laneOf.has(s)) {
+        return;
+      }
+      const chain = chains.get(s) || [];
+      const viaTrunk = hasTrunk && feeders.has(s);
+      const heights = [...chain.map(p => p.y + p.h / 2), viaTrunk ? trunkY : portY.get(s)];
+      let y = s.from.y + s.from.h / 2;
+      const legs = [s.from, ...chain].map((n, k): Leg => {
+        const turn = Math.abs(heights[k] - y) >= STRAIGHT;
+        const junction = viaTrunk && k === chain.length;
+        const leg = {g: n.layer, key: k === 0 ? 'n:' + s.from.id : `e:${i}:${k}`, ya: y, yb: turn ? heights[k] : y, turn,
+          soft: turn && !junction && Math.abs(heights[k] - y) < SOFT_TURN, junction};
+        y = leg.yb;
+        return leg;
+      });
+      legsOf.set(s, legs);
+      legs.filter(l => l.turn && !l.soft && !l.junction).forEach(l => {
+        const inGap = turns.get(l.g) || turns.set(l.g, new Map()).get(l.g);
+        const t = inGap.get(l.key);
+        if (t) {
+          t.lo = Math.min(t.lo, l.yb);
+          t.hi = Math.max(t.hi, l.yb);
+          t.exits.push(l.yb);
+        } else {
+          inGap.set(l.key, {ya: l.ya, lo: Math.min(l.ya, l.yb), hi: Math.max(l.ya, l.yb), exits: [l.yb]});
+        }
+      });
+    });
+
+    const downs = new Map<number, EdgeSpec[]>();
+    const ups = new Map<number, EdgeSpec[]>();
+    const addTo = (m: Map<number, EdgeSpec[]>, g: number, s: EdgeSpec) => (m.get(g) || m.set(g, []).get(g)).push(s);
+    back.forEach(s => {
+      addTo(downs, s.from.layer, s);
+      addTo(ups, s.to.layer - 1, s);
+    });
+    downs.forEach(list => list.sort((a, b) => laneOf.get(a) - laneOf.get(b)));
+    ups.forEach(list => list.sort((a, b) => laneOf.get(b) - laneOf.get(a)));
+    const junctionGap = hasTrunk ? foldNode.layer - 1 : null;
+    const turnKeys = (g: number): string[] => {
+      const inGap = turns.get(g) || new Map<string, Turn>();
+      const list = Array.from(inGap.entries()).map(([key, t]) => ({key, ya: t.ya, down: t.hi - t.ya >= t.ya - t.lo}));
+      const byKey = (a: { key: string }, b: { key: string }) => a.key < b.key ? -1 : a.key > b.key ? 1 : 0;
+      const keys = [...list.filter(t => t.down).sort((a, b) => b.ya - a.ya || byKey(a, b)),
+        ...list.filter(t => !t.down).sort((a, b) => a.ya - b.ya || byKey(a, b))].map(t => t.key);
+      for (let pass = 0; pass < 5; pass++) {
+        let moved = false;
+        for (let i = 0; i < keys.length && !moved; i++) {
+          for (let j = i + 1; j < keys.length && !moved; j++) {
+            const entry = inGap.get(keys[j]).ya;
+            if (inGap.get(keys[i]).exits.some(y => Math.abs(y - entry) < 1)) {
+              keys.splice(i, 0, keys.splice(j, 1)[0]);
+              moved = true;
+            }
+          }
+        }
+        if (!moved) {
+          break;
+        }
+      }
+      return g === junctionGap ? [...keys, 'junction'] : keys;
+    };
+    const lines = (g: number) => (downs.get(g)?.length || 0) + (turns.get(g)?.size || 0) + (g === junctionGap ? 1 : 0)
+      + (ups.get(g)?.length || 0);
+    const need = (count: number) => Math.min(SLOT_GAP_MAX, SLOT_IN + SLOT_ARROW + (count - 1) * SLOT_MIN);
+
+    const colX: number[] = [];
+    const colRight: number[] = [];
+    all.forEach(n => {
+      colX[n.layer] = colX[n.layer] === undefined ? n.x : Math.min(colX[n.layer], n.x);
+      colRight[n.layer] = colRight[n.layer] === undefined ? n.x + n.w : Math.max(colRight[n.layer], n.x + n.w);
+    });
+    const shift: number[] = [];
+    let acc = 0;
+    for (let c = 0; c < cols; c++) {
+      const count = lines(c - 1);
+      if (count > 0) {
+        const current = c === 0 ? colX[0] : colX[c] - colRight[c - 1];
+        const wanted = c === 0 ? Math.max(SIDE_GAP, need(count)) : need(count);
+        acc += Math.max(0, wanted - current);
+      }
+      shift[c] = acc;
+    }
+    if (acc > 0) {
+      all.forEach(n => n.x += shift[n.layer]);
+      for (let c = 0; c < cols; c++) {
+        colX[c] += shift[c];
+        colRight[c] += shift[c];
+      }
+    }
+    const lastLines = lines(cols - 1);
+    const gapLeft = (g: number) => g < 0 ? 0 : colRight[g];
+    const gapRight = (g: number) => g < cols - 1 ? colX[g + 1] : colRight[cols - 1] + Math.max(SIDE_GAP, need(lastLines));
+
+    const downX = new Map<EdgeSpec, number>();
+    const upX = new Map<EdgeSpec, number>();
+    const turnX = new Map<string, number>();
+    for (let g = -1; g < cols; g++) {
+      const d = downs.get(g) || [];
+      const t = turnKeys(g);
+      const u = ups.get(g) || [];
+      const count = d.length + t.length + u.length;
+      if (count === 0) {
+        continue;
+      }
+      const lo = gapLeft(g) + SLOT_IN;
+      const hi = gapRight(g) - SLOT_ARROW;
+      const step = count > 1 ? Math.min(SLOT_GAP, (hi - lo) / (count - 1)) : 0;
+      const slot = (k: number) => (lo + hi) / 2 + (k - (count - 1) / 2) * step;
+      d.forEach((s, k) => downX.set(s, slot(k)));
+      t.forEach((key, k) => turnX.set(g + '|' + key, slot(d.length + k)));
+      u.forEach((s, k) => upX.set(s, slot(d.length + t.length + k)));
+    }
+
+    const laneStep = lanes.length > 1 ? Math.min(LANE_GAP, LANE_AREA_MAX / (lanes.length - 1)) : 0;
+    const laneY = (lane: number) => bottom + LANE_TOP + lane * laneStep;
+    const right = colRight[cols - 1] + PAD;
+    this.width = lastLines > 0 ? Math.max(right, gapRight(cols - 1)) : right;
+    this.height = (lanes.length > 0 ? laneY(lanes.length - 1) : bottom) + PAD;
+
+    const junction = hasTrunk ? {x: turnX.get(junctionGap + '|junction'), y: trunkY} : null;
+    const edges: LayoutEdge[] = specs.map((s, i) => {
       const viaTrunk = !!junction && feeders.has(s);
-      const path = viaTrunk ? this.curveTo(s.from, junction.x, junction.y) : this.edgePath(s.from, s.to);
+      let path: string;
+      if (laneOf.has(s)) {
+        const y1 = s.from.y + s.from.h / 2;
+        const y2 = portY.get(s);
+        const ly = laneY(laneOf.get(s));
+        const xd = downX.get(s);
+        const xu = upX.get(s);
+        path = this.roundedPath([[s.from.x + s.from.w, y1], [xd, y1], [xd, ly], [xu, ly], [xu, y2], [s.to.x, y2]]);
+      } else {
+        const legs = legsOf.get(s);
+        const last = legs[legs.length - 1];
+        let d = '';
+        let pts: [number, number][] = [[s.from.x + s.from.w, legs[0].ya]];
+        const add = (x: number, y: number) => {
+          const p = pts[pts.length - 1];
+          if (p[0] !== x || p[1] !== y) {
+            pts.push([x, y]);
+          }
+        };
+        legs.forEach(l => {
+          if (l.soft) {
+            const x1 = gapLeft(l.g);
+            const x2 = l === last ? s.to.x : gapRight(l.g);
+            const dx = (x2 - x1) / 2;
+            add(x1, l.ya);
+            d += this.cornerPath(pts) + ` C${x1 + dx},${l.ya} ${x2 - dx},${l.yb} ${x2},${l.yb}`;
+            pts = [[x2, l.yb]];
+          } else if (l.junction || l.turn) {
+            const x = l.junction ? junction.x : turnX.get(l.g + '|' + l.key);
+            add(x, l.ya);
+            add(x, l.yb);
+          }
+        });
+        if (!last.junction) {
+          add(s.to.x, last.yb);
+        }
+        path = `M${s.from.x + s.from.w},${legs[0].ya}` + d + this.cornerPath(pts);
+      }
       return {
         id: 'e' + i, cls: s.cls, title: s.title, arrow: !viaTrunk, from: s.from.id, to: s.to.id,
         d: path, box: this.pathBox(path)
@@ -605,12 +859,33 @@ export class CriticalPathGraphComponent implements OnChanges, AfterViewInit, OnD
     });
     if (junction) {
       const path = `M${junction.x},${junction.y} L${foldNode.x},${junction.y}`;
-      this.edges.push({
+      edges.push({
         id: 'trunk', cls: 'fold', arrow: true, from: 'trunk', to: 'fold', d: path, box: this.pathBox(path),
-        title: t('dailyPlan.dependencies.graph.trunk', {count: feeders.size})
+        title: this.translate.instant('dailyPlan.dependencies.graph.trunk', {count: feeders.size})
       });
     }
-    this.updateWindow(true);
+    return edges;
+  }
+
+  private roundedPath(pts: [number, number][]): string {
+    return `M${pts[0][0]},${pts[0][1]}` + this.cornerPath(pts);
+  }
+
+  private cornerPath(pts: [number, number][]): string {
+    let d = '';
+    for (let i = 1; i < pts.length - 1; i++) {
+      const [px, py] = pts[i - 1];
+      const [x, y] = pts[i];
+      const [nx, ny] = pts[i + 1];
+      const r = Math.min(CORNER, Math.hypot(x - px, y - py) / 2, Math.hypot(nx - x, ny - y) / 2);
+      d += ` L${x + Math.sign(px - x) * r},${y + Math.sign(py - y) * r}`;
+      d += ` Q${x},${y} ${x + Math.sign(nx - x) * r},${y + Math.sign(ny - y) * r}`;
+    }
+    if (pts.length > 1) {
+      const last = pts[pts.length - 1];
+      d += ` L${last[0]},${last[1]}`;
+    }
+    return d;
   }
 
   private pathBox(path: string): Box {
@@ -662,14 +937,7 @@ export class CriticalPathGraphComponent implements OnChanges, AfterViewInit, OnD
     this.resizeObserver.observe(el);
   }
 
-  private curveTo(a: LayoutNode, x2: number, y2: number): string {
-    const x1 = a.x + a.w;
-    const y1 = a.y + a.h / 2;
-    const dx = Math.max(16, (x2 - x1) / 2);
-    return `M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}`;
-  }
-
-  private placeNodes(all: LayoutNode[], neighbours: Map<string, LayoutNode[]>): void {
+  private assignColumns(all: LayoutNode[]): LayoutNode[][] {
     const layerIds = Array.from(new Set(all.map(n => n.layer))).sort((a, b) => a - b);
     const columns: LayoutNode[][] = layerIds.map(id => all.filter(n => n.layer === id));
     let x = PAD;
@@ -680,6 +948,30 @@ export class CriticalPathGraphComponent implements OnChanges, AfterViewInit, OnD
       });
       x += Math.max(...col.map(n => n.w)) + GAP_X;
     });
+    return columns;
+  }
+
+  private addWaypoints(specs: EdgeSpec[], columns: LayoutNode[][]): Map<EdgeSpec, LayoutNode[]> {
+    const chains = new Map<EdgeSpec, LayoutNode[]>();
+    const long = specs.filter(s => s.to.layer - s.from.layer > 1);
+    const count = long.reduce((sum, s) => sum + s.to.layer - s.from.layer - 1, 0);
+    if (count === 0 || count > WAYPOINT_LIMIT) {
+      return chains;
+    }
+    const colX = columns.map(col => col[0].x);
+    const colW = columns.map(col => Math.max(...col.map(n => n.w)));
+    long.forEach((s, i) => {
+      const chain: LayoutNode[] = [];
+      for (let c = s.from.layer + 1; c < s.to.layer; c++) {
+        chain.push({id: `p:${i}:${c}`, type: 'waypoint', layer: c, x: colX[c], y: 0, w: colW[c], h: WAYPOINT_H});
+      }
+      chains.set(s, chain);
+    });
+    chains.forEach(chain => chain.forEach(p => columns[p.layer].push(p)));
+    return chains;
+  }
+
+  private placeRows(columns: LayoutNode[][], neighbours: Map<string, LayoutNode[]>): void {
     columns.forEach(col => {
       col.sort((a, b) => this.nodeLabel(a).localeCompare(this.nodeLabel(b)));
       let y = 0;
@@ -702,8 +994,56 @@ export class CriticalPathGraphComponent implements OnChanges, AfterViewInit, OnD
       sweep(columns.slice(0, -1).reverse(), false);
     }
     sweep(columns.slice(1), true);
-    const minY = Math.min(...all.map(n => n.y));
-    all.forEach(n => n.y += PAD - minY);
+    let minY = Infinity;
+    columns.forEach(col => col.forEach(n => minY = Math.min(minY, n.y)));
+    columns.forEach(col => col.forEach(n => n.y += PAD - minY));
+  }
+
+  private straightenWaypoints(columns: LayoutNode[][], chains: Map<EdgeSpec, LayoutNode[]>): void {
+    if (chains.size === 0) {
+      return;
+    }
+    const at = new Map<LayoutNode, number>();
+    columns.forEach(col => col.forEach((n, i) => at.set(n, i)));
+    const room = (p: LayoutNode): [number, number] => {
+      const col = columns[p.layer];
+      const above = col[at.get(p) - 1];
+      const below = col[at.get(p) + 1];
+      return [above ? above.y + above.h + this.rowGap(above, p) + p.h / 2 : -Infinity,
+        below ? below.y - this.rowGap(p, below) - p.h / 2 : Infinity];
+    };
+    chains.forEach((chain, s) => {
+      let want = s.from.y + s.from.h / 2;
+      let start = 0;
+      let lo = -Infinity;
+      let hi = Infinity;
+      const place = (end: number) => {
+        want = Math.min(hi, Math.max(lo, want));
+        for (let k = start; k < end; k++) {
+          chain[k].y = want - chain[k].h / 2;
+        }
+      };
+      chain.forEach((p, k) => {
+        const [a, b] = room(p);
+        if (Math.max(lo, a) > Math.min(hi, b)) {
+          place(k);
+          start = k;
+          lo = a;
+          hi = b;
+        } else {
+          lo = Math.max(lo, a);
+          hi = Math.min(hi, b);
+        }
+      });
+      place(chain.length);
+    });
+  }
+
+  private rowGap(a: LayoutNode, b: LayoutNode | undefined): number {
+    if (!b || (a.type !== 'waypoint' && b.type !== 'waypoint')) {
+      return GAP_Y;
+    }
+    return a.type === 'waypoint' && b.type === 'waypoint' ? WAYPOINT_GAP : WAYPOINT_MARGIN;
   }
 
   private stack(col: LayoutNode[], desired: number[]): void {
@@ -713,7 +1053,7 @@ export class CriticalPathGraphComponent implements OnChanges, AfterViewInit, OnD
     let acc = 0;
     items.forEach((it, i) => {
       offset.push(acc);
-      acc += it.n.h + GAP_Y;
+      acc += it.n.h + this.rowGap(it.n, items[i + 1]?.n);
     });
     const blocks: { sum: number; count: number }[] = [];
     items.forEach((it, i) => {
@@ -767,21 +1107,6 @@ export class CriticalPathGraphComponent implements OnChanges, AfterViewInit, OnD
 
   plural(key: string, count: number): string {
     return count === 1 ? key + 'One' : key;
-  }
-
-  private edgePath(a: LayoutNode, b: LayoutNode): string {
-    const x1 = a.x + a.w;
-    const y1 = a.y + a.h / 2;
-    const x2 = b.x;
-    const y2 = b.y + b.h / 2;
-    if (x2 > x1) {
-      const dx = Math.max(24, (x2 - x1) / 2);
-      return `M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}`;
-    }
-    const loop = 36;
-    const low = Math.max(a.y + a.h, b.y + b.h) + 28;
-    const mid = (x1 + x2) / 2;
-    return `M${x1},${y1} C${x1 + loop},${y1} ${x1 + loop},${low} ${mid},${low} S${x2 - loop},${y2} ${x2},${y2}`;
   }
 
   zoomIn(): void {

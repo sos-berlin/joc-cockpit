@@ -14,7 +14,7 @@
     </div>
   }
   @for (r of rows; track r.id) {
-    <div class="tl-group" [class.tl-open]="expanded.has(r.id)">
+    <div class="tl-group" [class.tl-open]="expanded.has(r.id)" [attr.data-cp-id]="r.id">
       <div class="tl-row" role="button" tabindex="0" [attr.aria-expanded]="expanded.has(r.id)"
            (click)="toggle(r.id)" (keydown.enter)="toggle(r.id)">
         <i class="fa" [ngClass]="expanded.has(r.id) ? 'fa-caret-down' : 'fa-caret-right'"></i>

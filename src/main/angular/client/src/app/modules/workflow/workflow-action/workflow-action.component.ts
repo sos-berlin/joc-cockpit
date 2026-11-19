@@ -2257,6 +2257,20 @@ export class WorkflowActionComponent {
     this.openModal(workflow);
   }
 
+  canShowCriticalPath(): boolean {
+    const w = this.workflow;
+    return !!(w && (w.hasPostNoticeBoards || w.hasExpectedNoticeBoards || w.hasConsumeNoticeBoards)
+      && this.permission?.joc?.dailyPlan?.view && this.permission?.currentController?.orders?.view);
+  }
+
+  showCriticalPath(view: 'dependencies' | 'timeline'): void {
+    const dailyPlanTab = this.coreService.getDailyPlanTab();
+    dailyPlanTab.tabIndex = view === 'timeline' ? 2 : 1;
+    dailyPlanTab.criticalPath = {view, path: this.workflow.path};
+    this.coreService.getPlansTab().selectedDate = new Date(new Date().setHours(0, 0, 0, 0));
+    this.router.navigate(['/daily_plan']).then();
+  }
+
   private openModal(workflow): void {
     this.modal.create({
       nzTitle: undefined,

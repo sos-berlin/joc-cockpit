@@ -13,48 +13,7 @@
   margin-left: 338px;
 }
 
-.r-t-8 {
-  right: 8px;
-  top: 6px
-}
-
-.l-t-8 {
-  left: 8px;
-  top: 6px
-}
-
-.toolbar-icons {
-  position: absolute;
-  padding: 2px 16px 0;
-  text-align: center;
-  background-color: var(--bg-box);
-  z-index: 9;
-  box-shadow: 0 1px 6px 1px rgba(0, 0, 0, 0.12);
-}
-
-
-.notice-progress {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  height: 18px !important;
-
-}
-
-.notice-count {
-  font-weight: 600;
-  white-space: nowrap;
-  min-width: 30px;
-}
-
-.notice-progress nz-progress {
-  flex-grow: 1;
-  min-width: 30px;
-  max-width: 60px;
-}
-
-.selected-blue, .cal-day-plan {
+.selected-blue {
   color: var(--date-selected);
 
   &:hover {
@@ -91,52 +50,9 @@ $dep-tint: rgba(128, 128, 160, 0.10);
   padding: 0;
 }
 
-.dep-legend-none {
-  color: $dep-none;
-}
-
 .dep-list {
   flex: 1;
   overflow: auto;
-}
-
-// ---- state colours (segments, dots, rail nodes)
-.dep-state-normal {
-  background-color: $dep-normal;
-}
-
-.dep-state-action {
-  background-color: $dep-action;
-}
-
-.dep-state-expecting {
-  background-color: $dep-expecting;
-}
-
-.dep-state-failed {
-  background-color: $dep-failed;
-}
-
-.dep-state-none {
-  background-color: transparent;
-  border: 1px dashed $dep-none;
-  box-sizing: border-box;
-}
-
-.dep-text-action {
-  color: $dep-action;
-}
-
-.dep-text-expecting {
-  color: $dep-expecting;
-}
-
-.dep-text-failed {
-  color: $dep-failed;
-}
-
-.dep-text-none {
-  opacity: 0.7;
 }
 
 .dep-warn {
@@ -191,13 +107,6 @@ $dep-tint: rgba(128, 128, 160, 0.10);
   .dep-col-status {
     font-size: 12px;
   }
-}
-
-.dep-dot {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
 }
 
 .dep-strip {
@@ -277,11 +186,6 @@ $dep-tint: rgba(128, 128, 160, 0.10);
     height: 14px;
     border-radius: 50%;
     border: 2px solid var(--bg-box);
-  }
-
-  .dep-node.dep-state-none {
-    border: 2px dashed $dep-none;
-    background-color: var(--bg-box);
   }
 
   &.dep-rail-dotted::before {
@@ -394,38 +298,6 @@ $dep-tint: rgba(128, 128, 160, 0.10);
   gap: 6px;
 }
 
-.dep-health {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  justify-self: start;
-  padding: 2px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
-
-  &.dep-health-intervention {
-    background-color: $dep-action;
-    color: #000000;
-  }
-
-  &.dep-health-waiting {
-    background-color: $dep-expecting;
-    color: #000000;
-  }
-
-  &.dep-health-ok {
-    background-color: $dep-normal;
-    color: #ffffff;
-  }
-
-  &.dep-health-inactive {
-    border: 1px dashed $dep-none;
-    font-weight: 400;
-  }
-}
-
 // ---- column headers inside an opened Critical Path
 .dep-step.dep-step-head {
   position: sticky;
@@ -449,23 +321,6 @@ $dep-tint: rgba(128, 128, 160, 0.10);
   .dep-step-body {
     opacity: 0.75;
   }
-}
-
-// ---- folded row for Critical Paths without orders
-.dep-group-row.dep-inactive-row {
-  .dep-inactive-text {
-    grid-column: 3 / -1;
-    font-size: 13px;
-  }
-}
-
-// ---- JOC-2320 review: suspended orders need attention but are no error -> orange, not red
-.dep-state-suspended {
-  background-color: $dep-action;
-}
-
-.dep-text-suspended {
-  color: $dep-action;
 }
 
 // ---- object-type icons in front of workflow and Notice Board names
@@ -831,18 +686,6 @@ $dep-tint: rgba(128, 128, 160, 0.10);
   }
 }
 
-// hint for Critical Paths hidden by collapsed chips (click expands all)
-.dep-collapsed-hint {
-  padding: 10px 14px 10px 44px;
-  border-bottom: 1px solid $dep-line;
-  opacity: 0.75;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
 // "+N more" in Posts Notice
 .dep-more {
   margin-left: 6px;
@@ -1005,18 +848,6 @@ $dep-tint: rgba(128, 128, 160, 0.10);
   }
 }
 
-// ---- JOC-2343: switch to the Timeline view for an opened Critical Path
-.dep-view-switch {
-  display: flex;
-  justify-content: flex-end;
-  padding: 4px 14px 0;
-  font-size: 12px;
-}
-
-.dep-chain.dep-chain-graph {
-  padding: 8px 14px 14px;
-}
-
 .dep-path-bar {
   display: flex;
   flex-wrap: wrap;
@@ -1026,10 +857,6 @@ $dep-tint: rgba(128, 128, 160, 0.10);
   padding: 8px 14px 2px 44px;
   background-color: $dep-tint;
   font-size: 12px;
-
-  &.dep-path-bar-graph {
-    padding-left: 14px;
-  }
 }
 
 .dep-view-opts {

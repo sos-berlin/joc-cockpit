@@ -388,7 +388,7 @@ export class DependenciesComponent {
   blockedPathCount = 0;
   /** timing of the last load, for measuring the performance impact (see console and footer tooltip) */
   lastPerf: { requestMs: number; buildMs: number; workflows: number; dependencies: number; paths: number } | null = null;
-  viewMode: 'table' | 'graph' = 'table';
+  viewMode: 'table' | 'graph' = 'graph';
   private pathViewModes = new Map<string, 'table' | 'graph'>();
 
   constructor(
@@ -423,7 +423,7 @@ export class DependenciesComponent {
     if (this.mode === 'timeline') {
       this.timelineClock = setInterval(() => this.tickTimeline(), 60000);
     }
-    if (dailyPlanFilters.tabIndex === 2 || this.mode === 'timeline') {
+    if (dailyPlanFilters.tabIndex === 1 || this.mode === 'timeline') {
       this.loadAdditionaSnapshotlData();
     } else {
       this.loadAdditionalData();
@@ -1928,7 +1928,27 @@ export class DependenciesComponent {
       this.toggleGroup(g);
     }
     this.cd.markForCheck();
+    this.scrollToCriticalPath(g.id);
     return true;
+  }
+
+
+  private scrollToCriticalPath(id: string): void {
+    setTimeout(() => requestAnimationFrame(() => {
+      const list: HTMLElement | null = this.hostEl.nativeElement.querySelector('.dep-list');
+      if (!list) {
+        return;
+      }
+      const row = Array.from(list.querySelectorAll<HTMLElement>('[data-cp-id]')).find(el => el.dataset['cpId'] === id);
+      if (!row) {
+        return;
+      }
+      const head = Array.from(list.querySelectorAll<HTMLElement>('.tl-head, .dep-head'))
+        .find(el => getComputedStyle(el).position === 'sticky');
+      const offset = head ? head.offsetHeight : 0;
+      const top = list.scrollTop + row.getBoundingClientRect().top - list.getBoundingClientRect().top - offset;
+      list.scrollTo({top: Math.max(0, top), behavior: 'smooth'});
+    }));
   }
 
   private applyFocus(): void {
@@ -2526,9 +2546,9 @@ export class DependenciesComponent {
 
   private readViewMode(): 'table' | 'graph' {
     try {
-      return localStorage.getItem(VIEW_MODE_KEY) === 'graph' ? 'graph' : 'table';
+      return sessionStorage.getItem(VIEW_MODE_KEY) === 'table' ? 'table' : 'graph';
     } catch (e) {
-      return 'table';
+      return 'graph';
     }
   }
 
@@ -2548,7 +2568,7 @@ export class DependenciesComponent {
     this.pathViewModes.set(g.id, mode);
     this.viewMode = mode;
     try {
-      localStorage.setItem(VIEW_MODE_KEY, mode);
+      sessionStorage.setItem(VIEW_MODE_KEY, mode);
     } catch (e) {
     }
     this.cd.markForCheck();
