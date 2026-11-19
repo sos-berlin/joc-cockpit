@@ -8,9 +8,9 @@ Reads an inbox for incoming mail.
 
 The job reads an inbox and provides actions for incoming mail. The actions to be executed for incoming mail are specified with the *mail_action* argument.
 
-Any general *mail.\**, POP3 *mail.pop3.\** and IMAP *mail.imap.\** properties for Java Mail can be used for connections to mail servers. For details see
+Any *mail.\**, POP3 *mail.pop3.\** and IMAP *mail.imap.\** properties for Java Mail can be used for connections to mail servers. For details see
 
-- [general mail properties](https://javaee.github.io/javamail/docs/api/javax/mail/package-summary.html)
+- [General mail properties](https://javaee.github.io/javamail/docs/api/javax/mail/package-summary.html)
 - [POP3 mail properties](https://javaee.github.io/javamail/docs/api/com/sun/mail/pop3/package-summary.html)
 - [IMAP mail properties](https://javaee.github.io/javamail/docs/api/com/sun/mail/imap/package-summary.html)
 </detail>
