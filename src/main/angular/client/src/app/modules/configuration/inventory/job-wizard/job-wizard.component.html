@@ -402,8 +402,7 @@
       </button>
     }
     @if (wizard.step === 2 && job.description) {
-      <button [nzPopoverContent]="contentTemplate" class="btn btn-grey btn-sm pull-right" nz-popover
-              nzPopoverTrigger="click" type="button">
+      <button [appRichTooltip]="contentTemplate" class="btn btn-grey btn-sm pull-right" type="button">
         <i class="fa fa-file-text-o p-r-sm"></i>
         <span>{{ 'workflow.label.description' | translate }}</span>
       </button>

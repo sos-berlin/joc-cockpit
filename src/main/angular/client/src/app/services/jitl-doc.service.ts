@@ -140,7 +140,7 @@ export class JitlDocService {
     if (type === 'BOOLEAN') {
       return 'Boolean';
     }
-    if (/INTEGER$/.test(type) || type === 'NUMBER') {
+    if (/(INTEGER|NUMBER)$/.test(type)) {
       return 'Number';
     }
     return 'String';
