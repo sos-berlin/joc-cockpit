@@ -1,0 +1,5 @@
+{
+  "name": "socket_timeout",
+  "required": false,
+  "dataType": "NONNEGATIVEINTEGER"
+}

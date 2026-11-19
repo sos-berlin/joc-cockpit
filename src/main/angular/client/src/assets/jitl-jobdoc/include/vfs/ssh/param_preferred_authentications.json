@@ -1,0 +1,5 @@
+{
+  "name": "preferred_authentications",
+  "required": false,
+  "dataType": "STRING"
+}

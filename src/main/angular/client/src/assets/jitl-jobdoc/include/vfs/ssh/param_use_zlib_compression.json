@@ -1,0 +1,5 @@
+{
+  "name": "use_zlib_compression",
+  "required": false,
+  "dataType": "BOOLEAN"
+}

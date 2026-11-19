@@ -1,0 +1,93 @@
+{
+  "job": {
+    "name": "YADEJob",
+    "category": "JITL",
+    "language": "Java",
+    "class": "com.sos.jitl.jobs.yade.YADEJob"
+  },
+  "arguments": [
+    {
+      "name": "settings",
+      "required": true,
+      "dataType": "STRING"
+    },
+    {
+      "name": "profile",
+      "required": true,
+      "dataType": "STRING"
+    },
+    {
+      "name": "source_dir",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "source_excluded_directories",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "source_file_path",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "source_file_spec",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "source_file_list",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "source_recursive",
+      "required": false,
+      "dataType": "BOOLEAN"
+    },
+    {
+      "name": "target_dir",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "settings_replacer_case_sensitive",
+      "required": false,
+      "dataType": "BOOLEAN"
+    },
+    {
+      "name": "settings_replacer_keep_unresolved",
+      "required": false,
+      "dataType": "BOOLEAN"
+    },
+    {
+      "name": "parallelism",
+      "required": false,
+      "dataType": "POSITIVEINTEGER",
+      "defaultValue": 1
+    },
+    {
+      "name": "source_sim_conn_faults",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "target_sim_conn_faults",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "sim_conn_faults",
+      "required": false,
+      "dataType": "STRING"
+    }
+  ],
+  "returnVariables": [
+    {
+      "name": "yade_return_values",
+      "required": false,
+      "dataType": "STRING"
+    }
+  ]
+}

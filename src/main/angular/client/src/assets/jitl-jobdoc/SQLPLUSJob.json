@@ -1,0 +1,87 @@
+{
+  "job": {
+    "name": "SQLPLUSJob",
+    "category": "JITL",
+    "language": "Java",
+    "class": "com.sos.jitl.jobs.db.oracle.SQLPLUSJob"
+  },
+  "arguments": [
+    {
+      "name": "shell_command",
+      "required": true,
+      "dataType": "STRING",
+      "defaultValue": "sqlplus"
+    },
+    {
+      "name": "command_line_options",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "$ref": "include/sql/param_sqlplus_db_url.json"
+    },
+    {
+      "name": "db_user",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "db_password",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "$ref": "include/sql/param_sqlplus_script_file.json"
+    },
+    {
+      "name": "include_files",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "command",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "timeout",
+      "required": false,
+      "dataType": "NONNNEGATIVEINTEGER"
+    },
+    {
+      "$ref": "include/sql/param_variable_parser_reg_expr.json"
+    },
+    {
+      "name": "ignore_ora_messages",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "ignore_sp2_messages",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "$ref": "include/common/param_credential_store_file.json"
+    },
+    {
+      "$ref": "include/common/param_credential_store_key_file.json"
+    },
+    {
+      "$ref": "include/common/param_credential_store_entry_path.json"
+    }
+  ],
+  "returnVariables": [
+    {
+      "name": "sql_error",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "$ref": "include/sql/param_std_out_output.json"
+    },
+    {
+      "$ref": "include/sql/param_exit_code.json"
+    }
+  ]
+}

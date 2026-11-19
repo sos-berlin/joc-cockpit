@@ -1,0 +1,5 @@
+{
+  "name": "connect_timeout",
+  "required": false,
+  "dataType": "NONNEGATIVEINTEGER"
+}

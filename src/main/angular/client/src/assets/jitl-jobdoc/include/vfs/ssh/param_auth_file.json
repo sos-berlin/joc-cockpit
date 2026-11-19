@@ -1,0 +1,5 @@
+{
+  "name": "auth_file",
+  "required": false,
+  "dataType": "STRING"
+}

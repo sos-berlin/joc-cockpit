@@ -1,0 +1,6 @@
+{
+  "name": "command_delimiter",
+  "required": false,
+  "dataType": "STRING",
+  "defaultValue": "%%"
+}

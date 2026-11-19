@@ -1,0 +1,5 @@
+{
+  "name": "auth_method",
+  "required": false,
+  "dataType": "STRING"
+}
