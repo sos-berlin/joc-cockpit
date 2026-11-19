@@ -2879,7 +2879,7 @@ export class JobWizardComponent {
       if (this.job.arguments) {
         if (!isArray(this.job.arguments)) {
           this.job.params = Object.entries(this.job.arguments).map(([k, v]) => {
-            const val: any = v;
+            const val: any = this.jitlDocService.normalizeArgument(v);
             return {
               name: k,
               required: val.required,
