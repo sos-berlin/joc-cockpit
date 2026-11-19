@@ -8,7 +8,7 @@ Starts SQL\*Plus client and executes statements in Oracle databases.
 
 ## What is the purpose of this job?
 
-The job starts the SQL\*Plus client in a separate process. It executes SQL statements from the *command* argument or from a file indicated by the *command_script_file* argument. 
+The job starts the SQL\*Plus client in a separate process. It executes SQL statements from the *command* argument or from a file indicated by the *command_script_file* argument.
 
 The job keeps control of the program flow and will terminate SQL\*Plus in case of success or errors.
 
@@ -31,7 +31,7 @@ The following syntax for use of variables with SQL statements is supported: `${v
 Workflow variables can be used in SQL statements in two ways:
 
 - First, all arguments can be used in SQL\*Plus statements from their name preceeded by an ampersand `&`.
-  - The arguments are defined as SQL*Plus variables by the job.
+  - The arguments are defined as SQL\*Plus variables by the job.
   - The job creates a "DEFINE" directive for each argument.
 - Second, the names of arguments can be used directly in SQL statements. Names are replaced by value of the respective argument.
 
@@ -55,7 +55,7 @@ Return variables are available to jobs and instructions in subsequent nodes of a
 
 ## How are errors managed?
 
-The job detects errors reported by the SQL\*Plus Client. Such errors use an identifier starting with the string `SP2-` followed by a number. 
+The job detects errors reported by the SQL\*Plus Client. Such errors use an identifier starting with the string `SP2-` followed by a number.
 
 In addition, the job detects errors reported by the database server on execution of SQL statements. Such errors use an identifier starting with the string `ORA-` followed by a number.
 

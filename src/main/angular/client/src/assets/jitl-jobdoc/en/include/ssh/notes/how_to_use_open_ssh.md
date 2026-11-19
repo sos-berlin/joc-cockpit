@@ -16,7 +16,7 @@ PasswordAuthentication yes
 **Option 2: Private/Public Key Authentication**
 
 The client holds the Private Key while the Public Key is stored with the SSH server.
-  
+
 The Private Key can be protected by a passphrase.
 
 Note that the publickey authentication must be enabled in the SSH
