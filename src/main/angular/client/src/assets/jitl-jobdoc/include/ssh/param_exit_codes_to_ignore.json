@@ -1,0 +1,5 @@
+{
+  "name": "exit_codes_to_ignore",
+  "required": false,
+  "dataType": "STRING"
+}

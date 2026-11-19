@@ -140,6 +140,10 @@ Specifies the user account to be used in case that the mail server requires auth
 Specifies the password used for the user account in case that the mail server requires authentication.
 </article>
 
+[](include:include/common/params/param_credential_store_file.md)
+[](include:include/common/params/param_credential_store_key_file.md)
+[](include:include/common/params/param_credential_store_entry_path.md)
+
 # Return Variables
 
 The job does not provide return variables.

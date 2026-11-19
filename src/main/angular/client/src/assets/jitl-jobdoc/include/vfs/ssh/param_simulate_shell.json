@@ -1,0 +1,5 @@
+{
+  "name": "simulate_shell",
+  "required": false,
+  "dataType": "BOOLEAN"
+}

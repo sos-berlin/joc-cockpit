@@ -40,7 +40,7 @@
       "dataType": "STRING"
     },
     {
-      "name": "resultset_as",
+      "name": "resultset_as_variables",
       "required": false,
       "dataType": "STRING"
     },

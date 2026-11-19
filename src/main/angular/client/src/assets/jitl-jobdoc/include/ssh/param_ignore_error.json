@@ -1,0 +1,5 @@
+{
+  "name": "ignore_error",
+  "required": false,
+  "dataType": "BOOLEAN"
+}

@@ -1,0 +1,5 @@
+{
+  "name": "command_script",
+  "required": false,
+  "dataType": "STRING"
+}

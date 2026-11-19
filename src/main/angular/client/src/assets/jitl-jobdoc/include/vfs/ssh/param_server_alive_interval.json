@@ -1,0 +1,5 @@
+{
+  "name": "server_alive_interval",
+  "required": false,
+  "dataType": "NONNEGATIVEINTEGER"
+}
