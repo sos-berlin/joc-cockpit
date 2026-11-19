@@ -520,7 +520,7 @@
                 </button>
               </div>
             }
-            @if (dailyPlanFilters.tabIndex === 1) {
+            @if (dailyPlanFilters.tabIndex === 3) {
               <div class="inline valign">
                 <label [(ngModel)]="dailyPlanFilters.current"
                        name="current" nz-checkbox  (nzCheckedChange)="loadProjectionForCalendar()" >
@@ -641,31 +641,31 @@
                 </nz-dropdown-menu>
               </div>
             }
-            @if (dailyPlanFilters.tabIndex !== 2 && dailyPlanFilters.tabIndex !== 3) {
+            @if (dailyPlanFilters.tabIndex !== 1 && dailyPlanFilters.tabIndex !== 2) {
               <button (click)="exportToExcel()" [disabled]="(dailyPlanFilters.tabIndex == 0 && planOrders?.length===0) || (dailyPlanFilters.tabIndex !== 0 && projectionData?.length===0)"
                       [appRichTooltip]="'common.tooltip.exportInXLS' | translate"
                       class="btn btn-grey btn-sm m-l-12">
                 <i class="fa fa-share-square-o"></i>
               </button>
             }
-            @if (dailyPlanFilters.tabIndex === 1) {
+            @if (dailyPlanFilters.tabIndex === 3) {
               <button (click)="exportObject(null)" class="btn btn-sm btn-grey m-l-12">
                 <i nz-icon nzTheme="outline" nzType="export"></i>&nbsp;
                 <span>{{ 'inventory.button.export' | translate }}</span>
               </button>
             }
-            @if (dailyPlanFilters.tabIndex == 2 && permission.currentController && permission.currentController.noticeBoards.post && setOfCheckedId?.size > 0) {
+            @if (dailyPlanFilters.tabIndex == 1 && permission.currentController && permission.currentController.noticeBoards.post && setOfCheckedId?.size > 0) {
               <button class="btn btn-grey btn-sm m-l-12" (click)="postAllNotices()"><i
                 class="fa fa-sticky-note-o"></i>&nbsp; {{'resource.board.button.postAll' | translate}}</button>
             }
-            @if (dailyPlanFilters.tabIndex == 2 && permission.currentController && permission.currentController.noticeBoards.post && (setOfCheckedId.size > 0 || mapOfCheckedId.size > 0)) {
+            @if (dailyPlanFilters.tabIndex == 1 && permission.currentController && permission.currentController.noticeBoards.post && (setOfCheckedId.size > 0 || mapOfCheckedId.size > 0)) {
               <button class="btn btn-grey btn-sm m-l-12"><i
                 class="fa fa-trash"></i>&nbsp; {{'resource.board.button.deleteAll' | translate}}</button>
             }
             @if (dailyPlanFilters.tabIndex == 0) {
               <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
             }
-            <!--  <app-toggle *ngIf="dailyPlanFilters.tabIndex == 2" [type] = "'DEPENDENCIES'" (messageEvent)="receiveMessage2($event)"></app-toggle>-->
+            <!--  <app-toggle *ngIf="dailyPlanFilters.tabIndex == 1" [type] = "'DEPENDENCIES'" (messageEvent)="receiveMessage2($event)"></app-toggle>-->
           </div>
           @if (dailyPlanFilters.tabIndex == 0) {
             <div [ngClass]="{'show-block':object.mapOfCheckedId.size>0}" class="hide">
@@ -1366,6 +1366,45 @@
           <span>{{ 'dailyPlan.tab.dailyPlan' | translate }}</span>
         </div>
       </ng-template>
+      <nz-tab [nzTitle]="dependenciesTabTitle">
+        <div class="row m-t-n-xxs">
+          <div class="col-md-12 ">
+            <app-dependencies (checkedNotices)="checkedNotices($event)"  [parentLoaded]="isParentLoaded"  [isToggle]="isToggle2" [permission]="permission" [schedulerId]="schedulerIds.selected" [preferences]="preferences"
+                              [focusPath]="dependenciesFocusPath" (switchView)="onSwitchView($event)"></app-dependencies>
+          </div>
+        </div>
+      </nz-tab>
+      <ng-template #dependenciesTabTitle>
+        <div class="flex-center">
+          @if (preferences?.showHelpPages) {
+            <i (click)="helpPage(2)"
+              [appRichTooltip]="'common.tooltip.help' | translate"
+              class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+          }
+          <span>{{ 'dailyPlan.tab.dependencies' | translate }}</span>
+        </div>
+      </ng-template>
+      <!-- JOC-2343: Timeline of the same Critical Paths; lazy, so it loads only when the tab is opened -->
+      <nz-tab [nzTitle]="timelineTabTitle">
+        <ng-template nz-tab>
+          <div class="row m-t-n-xxs">
+            <div class="col-md-12 ">
+              <app-dependencies mode="timeline" [permission]="permission" [schedulerId]="schedulerIds.selected"
+                                [preferences]="preferences" [focusPath]="timelineFocusPath" (switchView)="onSwitchView($event)"></app-dependencies>
+            </div>
+          </div>
+        </ng-template>
+      </nz-tab>
+      <ng-template #timelineTabTitle>
+        <div class="flex-center">
+          @if (preferences?.showHelpPages) {
+            <i (click)="helpPage(4)"
+              [appRichTooltip]="'common.tooltip.help' | translate"
+              class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+          }
+          <span>{{ 'dailyPlan.tab.timeline' | translate }}</span>
+        </div>
+      </ng-template>
       <nz-tab [nzTitle]="projectionTabTitle">
         <div class="row m-t-n-xxs">
           <div class="col-md-12 m-b">
@@ -1427,45 +1466,6 @@
               class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
           }
           <span>{{ 'dailyPlan.tab.projection' | translate }}</span>
-        </div>
-      </ng-template>
-      <nz-tab [nzTitle]="dependenciesTabTitle">
-        <div class="row m-t-n-xxs">
-          <div class="col-md-12 ">
-            <app-dependencies (checkedNotices)="checkedNotices($event)"  [parentLoaded]="isParentLoaded"  [isToggle]="isToggle2" [permission]="permission" [schedulerId]="schedulerIds.selected" [preferences]="preferences"
-                              [focusPath]="dependenciesFocusPath" (switchView)="onSwitchView($event)"></app-dependencies>
-          </div>
-        </div>
-      </nz-tab>
-      <ng-template #dependenciesTabTitle>
-        <div class="flex-center">
-          @if (preferences?.showHelpPages) {
-            <i (click)="helpPage(2)"
-              [appRichTooltip]="'common.tooltip.help' | translate"
-              class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
-          }
-          <span>{{ 'dailyPlan.tab.dependencies' | translate }}</span>
-        </div>
-      </ng-template>
-      <!-- JOC-2343: Timeline of the same Critical Paths; lazy, so it loads only when the tab is opened -->
-      <nz-tab [nzTitle]="timelineTabTitle">
-        <ng-template nz-tab>
-          <div class="row m-t-n-xxs">
-            <div class="col-md-12 ">
-              <app-dependencies mode="timeline" [permission]="permission" [schedulerId]="schedulerIds.selected"
-                                [preferences]="preferences" [focusPath]="timelineFocusPath" (switchView)="onSwitchView($event)"></app-dependencies>
-            </div>
-          </div>
-        </ng-template>
-      </nz-tab>
-      <ng-template #timelineTabTitle>
-        <div class="flex-center">
-          @if (preferences?.showHelpPages) {
-            <!-- <i (click)="helpPage(4)"
-              [appRichTooltip]="'common.tooltip.help' | translate"
-              class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i> -->
-          }
-          <span>{{ 'dailyPlan.tab.timeline' | translate }}</span>
         </div>
       </ng-template>
     </nz-tabs>

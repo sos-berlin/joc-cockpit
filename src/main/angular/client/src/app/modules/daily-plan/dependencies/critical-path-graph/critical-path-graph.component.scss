@@ -79,26 +79,6 @@ $cpg-tint: rgba(128, 128, 160, 0.10);
   }
 }
 
-.cpg-hint {
-  margin-left: 10px;
-  opacity: 0.6;
-}
-
-.cpg-legend {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 14px;
-  opacity: 0.85;
-}
-
-.cpg-legend-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  white-space: nowrap;
-}
-
 .cpg-viewport {
   position: relative;
   overflow: hidden;

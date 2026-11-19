@@ -41,6 +41,18 @@
           <a>{{'workflow.button.showDependency' | translate}} ..</a>
         </li>
       }
+      @if (canShowCriticalPath()) {
+        <li nz-submenu nzTitle="{{'workflow.button.showCriticalPath' | translate}}">
+          <ul>
+            <li (click)="showCriticalPath('dependencies')" nz-menu-item>
+              <a>{{ 'dailyPlan.tab.dependencies' | translate }}</a>
+            </li>
+            <li (click)="showCriticalPath('timeline')" nz-menu-item>
+              <a>{{ 'dailyPlan.tab.timeline' | translate }}</a>
+            </li>
+          </ul>
+        </li>
+      }
       @if (!workflow.isCurrentVersion) {
         <li (click)="transitionOrders(workflow);" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflow.path, 'managePositions') || workflow.state._text === 'NOT_IN_SYNC'"
             nz-menu-item>
