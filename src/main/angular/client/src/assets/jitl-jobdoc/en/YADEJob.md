@@ -6,9 +6,9 @@ Transfers files by FTP, FTPS, SFTP, WebDAV, HTTPS, SMB, Azure including Jump Hos
 # Purpose
 <detail>
 
-YADE is the Managed File Transfer utility that ships from a Command Line Client and from a JITL template job used with JS7 Agents.
+YADE is the Managed File Transfer utility that ships from a Command Line Client and from a JITL job template used with JS7 Agents.
 
-File Transfer operations include
+File Transfer operations include to
 
 - `copy` files from source to target
 - `move` files from source to target

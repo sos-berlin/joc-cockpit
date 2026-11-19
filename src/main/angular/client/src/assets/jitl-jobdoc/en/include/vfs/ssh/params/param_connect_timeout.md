@@ -1,7 +1,7 @@
 ## Argument: connect_timeout
 <article id="connect_timeout">
 
-Limits the waiting period in seconds for a connection to a remote host to be established. 
+Limits the waiting period in seconds for a connection to a remote host to be established.
 
 Possible values include:
 

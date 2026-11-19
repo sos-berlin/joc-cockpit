@@ -48,16 +48,5 @@
       "dataType": "STRING"
     }
   ],
-  "returnVariables": [
-    {
-      "name": "subject",
-      "required": false,
-      "dataType": "STRING"
-    },
-    {
-      "name": "body",
-      "required": false,
-      "dataType": "STRING"
-    }
-  ]
+  "returnVariables": []
 }

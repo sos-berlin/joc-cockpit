@@ -40,22 +40,23 @@ For more information see [SSH](https://en.wikipedia.org/wiki/SSH).
 [](include:include/vfs/common/params/param_proxy_port.md)
 [](include:include/vfs/common/params/param_proxy_user.md)
 [](include:include/vfs/common/params/param_proxy_password.md)
-[](include:include/vfs/ssh/params/param_command.md)
-[](include:include/vfs/ssh/params/param_command_script.md)
-[](include:include/vfs/ssh/params/param_command_script_file.md)
-[](include:include/vfs/ssh/params/param_command_script_param.md)
-[](include:include/vfs/ssh/params/param_command_delimiter.md)
-[](include:include/vfs/ssh/params/param_ignore_error.md)
-[](include:include/vfs/ssh/params/param_ignore_stderr.md)
-[](include:include/vfs/ssh/params/param_raise_exception_on_error.md)
-[](include:include/vfs/ssh/params/param_exit_codes_to_ignore.md)
+[](include:include/ssh/params/param_command.md)
+[](include:include/ssh/params/param_command_script.md)
+[](include:include/ssh/params/param_command_script_file.md)
+[](include:include/ssh/params/param_command_script_param.md)
+[](include:include/ssh/params/param_command_delimiter.md)
+[](include:include/ssh/params/param_ignore_error.md)
+[](include:include/ssh/params/param_ignore_stderr.md)
+[](include:include/ssh/params/param_raise_exception_on_error.md)
+[](include:include/ssh/params/param_exit_codes_to_ignore.md)
 
 ## Argument: tmp_dir
 <article id="tmp_dir">
 
 Specifies the directory for temporary data on the remote host.
 
-Default: 
+Default:
+
 - Unix: `/tmp`
 - Windows: `%TEMP%`
 </article>
@@ -71,7 +72,8 @@ Populates the remote session with JS7 Agent environment variables.
 
 Specifies the command to set an environment variable on the remote host.
 
-Default: 
+Default:
+
 - Unix: `export %s='%s'`
 - Windows: `set %s=%s`
 </article>
