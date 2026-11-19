@@ -21,6 +21,7 @@ import {FacetEditorComponent, ScriptEditorComponent} from '../workflow/workflow.
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import {CoreService} from '../../../../services/core.service';
+import {JitlDocService} from '../../../../services/jitl-doc.service';
 import {DataService} from '../../../../services/data.service';
 import {WorkflowService} from "../../../../services/workflow.service";
 import {InventoryObject} from '../../../../models/enums';
@@ -396,6 +397,8 @@ export class JobTemplateComponent {
   subscription4: Subscription;
 
   @ViewChild('codeEditor', {static: false}) cm: any;
+
+  private readonly jitlDocService = inject(JitlDocService);
 
   constructor(public coreService: CoreService, private dataService: DataService, private router: Router, private translate: TranslateService,
               private modal: NzModalService, private ref: ChangeDetectorRef, private message: NzMessageService,
@@ -880,7 +883,7 @@ export class JobTemplateComponent {
         this.job.configuration.title = result.title;
         this.job.configuration.documentationName = result.docName;
         result.arguments = Object.entries(result.arguments).map(([k, v]) => {
-          const val: any = v;
+          const val: any = this.jitlDocService.normalizeArgument(v);
           if (val.default) {
             if (val.type === 'String') {
               this.coreService.removeSlashToString(val, 'default');
