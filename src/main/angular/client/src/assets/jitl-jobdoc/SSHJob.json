@@ -76,31 +76,31 @@
       "$ref": "include/vfs/common/param_proxy_password.json"
     },
     {
-      "$ref": "include/vfs/ssh/param_command.json"
+      "$ref": "include/ssh/param_command.json"
     },
     {
-      "$ref": "include/vfs/ssh/param_command_script.json"
+      "$ref": "include/ssh/param_command_script.json"
     },
     {
-      "$ref": "include/vfs/ssh/param_command_script_file.json"
+      "$ref": "include/ssh/param_command_script_file.json"
     },
     {
-      "$ref": "include/vfs/ssh/param_command_script_param.json"
+      "$ref": "include/ssh/param_command_script_param.json"
     },
     {
-      "$ref": "include/vfs/ssh/param_command_delimiter.json"
+      "$ref": "include/ssh/param_command_delimiter.json"
     },
     {
-      "$ref": "include/vfs/ssh/param_ignore_error.json"
+      "$ref": "include/ssh/param_ignore_error.json"
     },
     {
-      "$ref": "include/vfs/ssh/param_ignore_stderr.json"
+      "$ref": "include/ssh/param_ignore_stderr.json"
     },
     {
-      "$ref": "include/vfs/ssh/param_raise_exception_on_error.json"
+      "$ref": "include/ssh/param_raise_exception_on_error.json"
     },
     {
-      "$ref": "include/vfs/ssh/param_exit_codes_to_ignore.json"
+      "$ref": "include/ssh/param_exit_codes_to_ignore.json"
     },
     {
       "name": "tmp_dir",
