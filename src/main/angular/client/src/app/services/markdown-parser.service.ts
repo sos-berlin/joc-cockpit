@@ -548,6 +548,23 @@ export class MarkdownParserService {
 
       if (!options.rawHtml) return transformPlain(text);
 
+      // Code spans take precedence over raw HTML (CommonMark): "`<n>s`" is code, not an HTML tag <n>.
+      // Extract them before splitting at HTML tags; the content of raw <pre> and <code> elements stays as is.
+      const rawCodeSlots: string[] = [];
+      if (text.includes('`')) {
+        let rawCodeDepth = 0;
+        text = text.replace(/(`+)([^`\n]+?)\1|<!--[\s\S]*?-->|<\/?[A-Za-z][^>]*>/g, (m: string, bt: string, code: string) => {
+          if (bt) {
+            if (rawCodeDepth) return m;
+            rawCodeSlots.push(`<code>${escapeHtml(code)}</code>`);
+            return `\x03${rawCodeSlots.length - 1}\x03`;
+          }
+          if (/^<\s*(pre|code)\b/i.test(m)) rawCodeDepth++;
+          else if (/^<\s*\/\s*(pre|code)\b/i.test(m)) rawCodeDepth = Math.max(0, rawCodeDepth - 1);
+          return m;
+        });
+      }
+
       const parts = text.split(/(<!--[\s\S]*?-->|<\/?[A-Za-z][^>]*>)/g);
 
       let preDepth = 0;
@@ -569,7 +586,8 @@ export class MarkdownParserService {
         }
       }
 
-      return out.join('');
+      const html = out.join('');
+      return rawCodeSlots.length ? html.replace(/\x03(\d+)\x03/g, (_, i) => rawCodeSlots[+i]) : html;
     };
 
     for (const t of tokens) {
