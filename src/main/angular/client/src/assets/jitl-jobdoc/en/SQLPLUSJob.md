@@ -39,9 +39,9 @@ Workflow variables can be used in SQL statements in two ways:
 
 The contents of stdout and stderr channels are available from related return variables such as *sql_error*.
 
-Subsequent jobs and instructions in a workflow can access the return variables.
+Subsequent jobs and instructions in a workflow can access return variables.
 
-## How can results be used in subsequent jobs?
+## How can results be used in later jobs?
 
 The job offers return variables.
 
@@ -51,7 +51,7 @@ In addition, return variables can be added dynamically. The job parses output of
 
 The regular expression is configured with the *variable_parser_reg_exp* argument.
 
-Return variables are available to jobs and instructions in subsequent nodes of a workflow. The values of return variables can be modified by subsequent jobs and instructions.
+Return variables are available to jobs and instructions in subsequent nodes of a workflow. The values of return variables can be modified by later jobs and instructions.
 
 ## How are errors managed?
 

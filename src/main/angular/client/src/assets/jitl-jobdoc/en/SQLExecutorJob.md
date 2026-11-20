@@ -28,11 +28,11 @@ Before SQL statements are executed, they are checked for placeholders that shoul
 
 The following syntax for use with SQL statements is supported: `${variable}`
 
-## How can results be used in subsequent jobs?
+## How can results be used in later jobs?
 
 Return variables can be added dynamically from the result set provided by the database.
 
-Return variables are available to jobs and instructions in subsequent nodes of a workflow. The values of return variables can be modified by subsequent jobs and instructions.
+Return variables are available to jobs and instructions in subsequent nodes of a workflow. The values of return variables can be modified by later jobs and instructions.
 </detail>
 
 # Arguments
