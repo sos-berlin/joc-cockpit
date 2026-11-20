@@ -46,7 +46,7 @@
     {
       "name": "timeout",
       "required": false,
-      "dataType": "NONNNEGATIVEINTEGER"
+      "dataType": "NONNEGATIVEINTEGER"
     },
     {
       "$ref": "include/sql/param_variable_parser_reg_expr.json"
