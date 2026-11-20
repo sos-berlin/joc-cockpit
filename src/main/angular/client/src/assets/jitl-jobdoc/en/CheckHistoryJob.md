@@ -10,43 +10,7 @@ Checks the Order History or Task History for execution of predecessor workflows 
 
 The job checks the order history and task history for execution results of workflows or jobs.
 
-## How can results be reused in subsequent jobs?
-
-### Use with *If Instruction*
-
-The outcome of the job can be used in subsequent *If Instructions* in a workflow.
-
-- `$returnCode > 0`
-- `variable( 'js7CheckHistoryResult', label=jobCheckHistory )`
-
-### Use with *Prompt Instruction*
-
-The outcome of the job can be used in subsequent *Prompt Instructions* in a workflow.
-
-- Example: `$js7CheckHistoryQuery ++ '(' ++ $js7CheckHistoryQueryWorkflow ++ ') ==> ' ++ $returnCode`
-
-### Use with *Retry Instruction*
-
-The outcome of the job can be used in subsequent *Retry Instructions* in a workflow.
-
-- In combination with an *If Instruction* that contains a *Fail Instruction* the workflow can be caused to retry until a query returns true.
-</detail>
-
-# Arguments
-
-## Argument: query
-<article id="query">
-
-Specifies the query to be executed by the job. Queries determine
-
-- the history status of orders or jobs:
-  - completed: the order or job completed successfully or failed
-  - completed successful
-  - completed failed
-- the period for which the execution history is looked up for orders and jobs that
-  - started between two dates
-  - completed between two dates
-  - with periods being specified as absolute or relative dates
+## How are queries specified?
 
 ### Syntax
 
@@ -114,6 +78,44 @@ Relative dates are specified like this:
   - one month ago, two months ago
 - `-1y`, `-2y`
   - one year ago, two years ago
+
+## How can results be reused in later jobs?
+
+### Use with *If Instruction*
+
+The outcome of the job can be used in subsequent *If Instructions* in a workflow.
+
+- `$returnCode > 0`
+- `variable( 'js7CheckHistoryResult', label=jobCheckHistory )`
+
+### Use with *Prompt Instruction*
+
+The outcome of the job can be used in subsequent *Prompt Instructions* in a workflow.
+
+- Example: `$js7CheckHistoryQuery ++ '(' ++ $js7CheckHistoryQueryWorkflow ++ ') ==> ' ++ $returnCode`
+
+### Use with *Retry Instruction*
+
+The outcome of the job can be used in subsequent *Retry Instructions* in a workflow.
+
+- In combination with an *If Instruction* that contains a *Fail Instruction* the workflow can be caused to retry until a query returns true.
+</detail>
+
+# Arguments
+
+## Argument: query
+<article id="query">
+
+Specifies the query to be executed by the job. Queries determine
+
+- the history status of orders or jobs:
+  - completed: the order or job completed successfully or failed
+  - completed successful
+  - completed failed
+- the period for which the execution history is looked up for orders and jobs that
+  - started between two dates
+  - completed between two dates
+  - with periods being specified as absolute or relative dates
 </article>
 
 ## Argument: workflow
