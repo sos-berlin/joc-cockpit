@@ -18,7 +18,7 @@ The username and password used for Basic Authentication can be provided
 - directly with the request using the base64-encoded "username:password" assigned the `Authorization: Basic dXNlcjpfzZWNyZXQ=` header.
 - in a specific format required by the target web service API.
 
-- For processing of JSON responses see [JS7 - JITL - qj Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+JITL+jq+Interface)
+- For processing of JSON responses see [JS7 - JITL - jq Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+JITL+jq+Interface)
 </detail>
 
 # Arguments

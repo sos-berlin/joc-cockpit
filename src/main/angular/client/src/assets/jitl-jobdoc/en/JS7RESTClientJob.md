@@ -10,7 +10,7 @@ The job offers access to the [JS7 REST Web Service API](https://kb.sos-berlin.co
 
 - See [Technincal Documentation of JS7 REST Web Service API](https://www.sos-berlin.com/JOC/latest/raml-doc/JOC-API/index.html).
 - The JOC Cockpit GUI supports creating requests for a number of relevant REST APIs, see [JS7 - JITL REST Editor](https://kb.sos-berlin.com/display/JS7/JS7+-+JITL+REST+Editor).
-- For processing of responses of the JS7 REST Web Service see [JS7 - JITL - qj Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+JITL+jq+Interface)
+- For processing of responses of the JS7 REST Web Service see [JS7 - JITL - jq Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+JITL+jq+Interface)
 </detail>
 
 # Arguments
