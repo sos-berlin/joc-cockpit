@@ -656,6 +656,8 @@ export class OrderOverviewComponent {
   ];
   subscription1: Subscription;
   subscription2: Subscription;
+  /** The running ./orders request: a new request cancels it so that only the latest response is displayed (JOC-2273). */
+  private ordersRequest: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
 
   @ViewChild(TreeComponent, {static: false}) child;
@@ -997,7 +999,9 @@ export class OrderOverviewComponent {
     if (obj.states?.includes("TERMINATED")) {
       obj.states = ["FINISHED"];
     }
-    this.coreService.post('orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+    // Race condition: an older request (e.g. an event refresh without the new filter) must not overwrite the result of a newer one.
+    this.ordersRequest?.unsubscribe();
+    this.ordersRequest = this.coreService.post('orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         res.orders = this.orderPipe.transform(res.orders, this.orderFilters.filter.sortBy, this.orderFilters.reverse);
         this.workflowTagsPerWorkflow = res?.workflowTagsPerWorkflow

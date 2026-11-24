@@ -128,7 +128,8 @@ export class ValueEditorComponent {
       if (!this.validateJson()) {
         return;
       }
-      this.activeModal.close(JSON.stringify(this.editor.get(), null, 2));
+      // Compact JSON: the value goes back into single-line inputs, which drop line breaks but keep indentation.
+      this.activeModal.close(JSON.stringify(this.editor.get()));
     } else {
       this.activeModal.close(this.data);
     }
