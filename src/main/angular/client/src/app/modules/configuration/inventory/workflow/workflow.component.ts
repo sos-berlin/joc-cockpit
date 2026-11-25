@@ -7342,6 +7342,9 @@ export class WorkflowComponent {
   }
 
   changeDataType(type, variable): void {
+    if (!this.isDisplayType(type)) {
+      delete variable.value.display;
+    }
     if (type === 'List' || type === 'Map') {
       delete variable.value.default;
       delete variable.value.default1;
@@ -8199,6 +8202,58 @@ export class WorkflowComponent {
 
   removeDelay(index, list): void {
     list.splice(index, 1);
+  }
+
+  private isDisplayType(type): boolean {
+    return type === 'String' || type === 'Number' || type === 'Boolean';
+  }
+
+  isDisplayEligible(variable): boolean {
+    return !!(variable && variable.name && variable.value && this.isDisplayType(variable.value.type));
+  }
+
+  private getDisplayEligibleVariables(): any[] {
+    return (this.variableDeclarations?.parameters || []).filter(variable => this.isDisplayEligible(variable));
+  }
+
+  hasDisplayEligibleVariable(): boolean {
+    return this.getDisplayEligibleVariables().length > 0;
+  }
+
+  isAllDisplayChecked(): boolean {
+    const list = this.getDisplayEligibleVariables();
+    return list.length > 0 && list.every(variable => variable.value.display === true);
+  }
+
+  isDisplayIndeterminate(): boolean {
+    const list = this.getDisplayEligibleVariables();
+    const count = list.filter(variable => variable.value.display === true).length;
+    return count > 0 && count < list.length;
+  }
+
+  onDisplayChecked(variable, checked: boolean): void {
+    if (this.isTrash || !this.isDisplayEligible(variable)) {
+      return;
+    }
+    this.setDisplay(variable, checked);
+    this.updateOtherProperties('variable');
+  }
+
+  onAllDisplayChecked(checked: boolean): void {
+    if (this.isTrash) {
+      return;
+    }
+    this.getDisplayEligibleVariables().forEach(variable => this.setDisplay(variable, checked));
+    this.updateOtherProperties('variable');
+  }
+
+  private setDisplay(variable, checked: boolean): void {
+    // The flag is kept only when true - the JSON must not contain "display": false
+    if (checked) {
+      variable.value.display = true;
+    } else {
+      delete variable.value.display;
+    }
   }
 
   removeVariable(index): void {
@@ -16833,6 +16888,9 @@ export class WorkflowComponent {
       let temp = this.coreService.clone(this.variableDeclarations.parameters);
       variableDeclarations.parameters = temp.filter((value) => {
         delete value.value.invalid;
+        if (value.value.display !== true) {
+          delete value.value.display;
+        }
         if (value.value.type === 'List' || value.value.type === 'Final' || value.value.type === 'Map') {
           delete value.value.default;
         } else if (value.value.type !== 'String') {

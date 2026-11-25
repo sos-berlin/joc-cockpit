@@ -2832,6 +2832,8 @@
         "timeZone": "タイムゾーンは、許可時間の計算とサイクル命令に使用されます。デフォルトでは、ユーザープロファイルで指定されたタイムゾーンが使用されます。",
         "dayOffset": "日数オフセット",
         "allowUndeclared": "^オーダー|order^から宣言されていない変数を許可します。これには、データ型や必須使用かどうかがチェックされていない変数を^オーダー|order^が持つことができることを含みます。オーダーから利用できない宣言されていない変数を参照する場合、ジョブは失敗します。",
+        "display": "Displays the variable in the Add Order dialog even if the variable holds a default value.\n\nVariables without a default value are always displayed. The setting is available for variables of data type String, Number and Boolean.",
+        "displayAll": "Displays all variables of data type String, Number and Boolean in the Add Order dialog even if they hold a default value.\n\nIf unchecked, then only variables without a default value are displayed by default.",
         "duration": "期間",
         "board": {
           "expectBoardName": "通知ボード名はインベントリーの中で一意である必要があります。ほとんどのユニコード文字、ドット、ハイフンが使用できますが、先頭または末尾のドットやハイフンは使用できません。",
