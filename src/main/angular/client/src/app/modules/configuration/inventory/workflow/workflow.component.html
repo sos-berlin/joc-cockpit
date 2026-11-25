@@ -1848,7 +1848,13 @@
             @if (isExpandVariable) {
               <ng-container>
                 @if (variableDeclarations.parameters.length > 0) {
-                  <div class="form-group row m-b-0 m-l-sm">
+                  <div class="form-group row m-b-0 m-l-lg">
+                    <div class="pos-abt m-t-n-xxs" style="margin-left: -14px;"
+                         [appRichTooltip]="'inventory.tooltips.workflow.displayAll' | translate">
+                      <label nz-checkbox [nzChecked]="isAllDisplayChecked()" [nzIndeterminate]="isDisplayIndeterminate()"
+                             [nzDisabled]="isTrash || !hasDisplayEligibleVariable()"
+                             (nzCheckedChange)="onAllDisplayChecked($event)"></label>
+                    </div>
                     <div class="col-md-4 col-lg-4 m-b-sm">{{ 'common.label.name' | translate }}</div>
                     <div class="col-md-3 col-lg-3 p-l-18 m-b-sm">{{ 'common.label.type' | translate }}</div>
                     <div class="col-md-5 col-lg-5 p-l-18 m-b-sm">{{ 'common.label.value' | translate }}</div>
@@ -1858,7 +1864,7 @@
                   @for (variable of variableDeclarations.parameters; track $index; let i = $index) {
                     <ng-container>
                       @if (variable.value.type === 'List' || variable.value.type === 'Map') {
-                        <div class="form-group row m-b-0 m-l-sm m-r-n-30">
+                        <div class="form-group row m-b-0 m-l-lg m-r-n-30">
                           @if (variable.value.type === 'List' || variable.value.type === 'Map') {
                             <div class="col-md-12 m-b-sm">
                               <label>
@@ -1893,10 +1899,16 @@
                         </div>
                       }
                       @if (!variable.isCollapse || (variable.value.type !== 'List' && variable.value.type !== 'Map')) {
-                        <div cdkDrag class="form-group row m-b-0 m-l-sm m-r-n-30">
+                        <div cdkDrag class="form-group row m-b-0 m-l-lg m-r-n-30">
                           <div cdkDragHandle class="pos-abt"
-                               style="margin-left: -9px;font-size: 18px;margin-top: 2px;cursor: move">
+                               style="margin-left: -37px;font-size: 18px;margin-top: 2px;cursor: move">
                             <i aria-hidden="true" class="fa fa-bars"></i>
+                          </div>
+                          <div class="pos-abt" style="margin-left: -14px;"
+                               [appRichTooltip]="'inventory.tooltips.workflow.display' | translate">
+                            <label nz-checkbox class="m-t-xs" [nzChecked]="variable.value.display === true"
+                                   [nzDisabled]="isTrash || !isDisplayEligible(variable)"
+                                   (nzCheckedChange)="onDisplayChecked(variable, $event)"></label>
                           </div>
                           <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
                                class="col-md-3 col-lg-3 m-b-sm p-r-0">

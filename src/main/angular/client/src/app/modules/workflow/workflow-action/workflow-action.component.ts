@@ -539,6 +539,7 @@ export class AddOrderModalComponent {
 
 
   updateVariableList(orderIndex?: number): void {
+    const displayArguments = [];
     if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters && !isEmpty(this.workflow.orderPreparation.parameters)) {
       this.variableList = Object.entries(this.workflow.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
@@ -565,11 +566,19 @@ export class AddOrderModalComponent {
                   list: list
                 });
               }
-            } else if (val.default) {
-              if (val.type === 'String' && val.default != "\"\"") {
-                this.coreService.removeSlashToString(val, 'default');
-              } else if (val.type === 'Boolean') {
-                val.default = (val.default === 'true' || val.default === true);
+            } else {
+              if (val.default) {
+                if (val.type === 'String' && val.default != "\"\"") {
+                  this.coreService.removeSlashToString(val, 'default');
+                } else if (val.type === 'Boolean') {
+                  val.default = (val.default === 'true' || val.default === true);
+                }
+              }
+              if (val.display === true && !this.modalData.order && orderIndex !== undefined
+                && !this.orders[orderIndex].arguments.some(arg => arg.name === k)) {
+                const argument = {name: k, value: ''};
+                this.orders[orderIndex].arguments.push(argument);
+                displayArguments.push(argument);
               }
             }
             if (this.modalData.order) {
@@ -657,6 +666,7 @@ export class AddOrderModalComponent {
       this.variableList = this.variableList.filter((item) => {
         return !item.value.final;
       });
+      displayArguments.forEach(argument => this.checkVariableType(argument, orderIndex));
     }
     this.updateSelectItems(orderIndex);
   }
