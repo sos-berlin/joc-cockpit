@@ -1,5 +1,5 @@
 import {
-  
+
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -44,6 +44,26 @@ export class ValueEditorComponent {
       return false;
     }
     return value.trim().startsWith('{');
+  }
+
+  private static parseJson(text: string): any {
+    const json = JSON.parse(text);
+    let inner = json;
+    for (let i = 0; i < 5 && typeof inner === 'string' && /^\s*[{["]/.test(inner); i++) {
+      try {
+        inner = JSON.parse(inner);
+      } catch (e) {
+        break;
+      }
+    }
+    return (inner && typeof inner === 'object') ? inner : json;
+  }
+
+  private static toText(json: any, pretty: boolean): string {
+    if (typeof json === 'string' && /^\s*[{[]/.test(json)) {
+      return json;
+    }
+    return pretty ? JSON.stringify(json, null, 2) : JSON.stringify(json);
   }
 
   constructor(public activeModal: NzModalRef, private cdr: ChangeDetectorRef, private coreService: CoreService) {
@@ -129,9 +149,22 @@ export class ValueEditorComponent {
         return;
       }
       // Compact JSON: the value goes back into single-line inputs, which drop line breaks but keep indentation.
-      this.activeModal.close(JSON.stringify(this.editor.get()));
+      this.activeModal.close(ValueEditorComponent.toText(this.editor.get(), false));
     } else {
-      this.activeModal.close(this.data);
+      this.activeModal.close(ValueEditorComponent.compactJsonText(this.data));
+    }
+  }
+
+  /** Text mode: valid JSON objects/arrays are submitted compact, as in JSON mode (formatted text would keep its line breaks). */
+  private static compactJsonText(text: any): any {
+    if (typeof text !== 'string' || !/^\s*[{[]/.test(text)) {
+      return text;
+    }
+    try {
+      const json = JSON.parse(text);
+      return (json && typeof json === 'object') ? JSON.stringify(json) : text;
+    } catch (e) {
+      return text;
     }
   }
 
@@ -141,7 +174,7 @@ export class ValueEditorComponent {
       text = '{}';
     }
     try {
-      this.jsonData = JSON.parse(text);
+      this.jsonData = ValueEditorComponent.parseJson(text);
       this.jsonText = '';
       this.isJsonError = false;
     } catch (e) {
@@ -249,7 +282,7 @@ export class ValueEditorComponent {
       return this.data;
     }
     try {
-      return JSON.stringify(this.editor.get(), null, 2);
+      return ValueEditorComponent.toText(this.editor.get(), true);
     } catch (e) {
       return this.editor.getText();
     }
