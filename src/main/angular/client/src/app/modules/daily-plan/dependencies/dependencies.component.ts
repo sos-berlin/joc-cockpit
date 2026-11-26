@@ -310,6 +310,8 @@ export class DependenciesComponent {
   pageSize: number = 10;
   sideBar: any = {orders: []};
   private lastLoadedMonthYear: string = '';
+  private plansKnown = false;
+  private selectedDayPending = false;
 
   private depPendingHTTPRequests$ = new Subject<void>();
   private subscription1: Subscription;
@@ -410,9 +412,8 @@ export class DependenciesComponent {
   ngOnInit(): void {
     this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'false';
     this.viewMode = this.readViewMode();
-    const d = new Date().setHours(0, 0, 0, 0);
-    this.selectedDate = new Date(d);
     this.plansFilters = this.coreService.getPlansTab();
+    this.selectedDate = this.plansFilters.selectedDate || new Date(new Date().setHours(0, 0, 0, 0));
     this.pageSize = this.plansFilters.filter.entryPerPage || 10;
     if (!this.plansFilters.filter.currentPage) {
       this.plansFilters.filter.currentPage = 1;
@@ -424,9 +425,7 @@ export class DependenciesComponent {
       this.timelineClock = setInterval(() => this.tickTimeline(), 60000);
     }
     if (dailyPlanFilters.tabIndex === 1 || this.mode === 'timeline') {
-      this.loadAdditionaSnapshotlData();
-    } else {
-      this.loadAdditionalData();
+      this.loadSelectedDay();
     }
   }
 
@@ -440,7 +439,7 @@ export class DependenciesComponent {
     if (changes['parentLoaded'] && changes['parentLoaded'].currentValue) {
       setTimeout(() => {
         this.initConf();
-        this.loadAdditionaSnapshotlData();
+        this.loadSelectedDay();
       }, 300);
     }
   }
@@ -467,12 +466,6 @@ export class DependenciesComponent {
   }
 
   private initConf(): void {
-    if (this.plansFilters.selectedDate) {
-      this.selectedDate = this.plansFilters.selectedDate;
-    } else {
-      const d = new Date().setHours(0, 0, 0, 0);
-      this.selectedDate = new Date(d);
-    }
     setTimeout(() => {
       const dom = this.calendarDom();
       if (!dom.data('calendar')) {
@@ -482,24 +475,10 @@ export class DependenciesComponent {
           selectedDate: this.selectedDate,
           clickDay: (e) => {
             this.selectedDate = e.date;
-            const formattedDate = this.coreService.getStringDate(this.selectedDate);
-            const matchingPlan = this.noticeSpaceKey.find(p =>
-              this.coreService.getStringDate(p.startDate) === formattedDate
-            );
             this.plansFilters.filter.currentPage = 1;
             this.expandedGroups.clear();
             this.openedFolds.clear();
-            if (matchingPlan) {
-              this.planSchemaId = matchingPlan.planSchemaId;
-              this.isClosed = matchingPlan.isClosed;
-              this.isOpen = matchingPlan.isOpen;
-              this.loadAdditionaSnapshotlData();
-            } else {
-              this.planSchemaId = null;
-              this.isClosed = false;
-              this.isOpen = false;
-              this.setWorkflowData(null);
-            }
+            this.loadSelectedDay();
             this.cd.markForCheck();
           },
           renderEnd: (e) => {
@@ -524,11 +503,46 @@ export class DependenciesComponent {
       planSchemaIds: ['Global', 'DailyPlan']
     };
     this.coreService.post('plans/ids', requestPayload)
-      .subscribe((res) => {
-        this.isLoaded = true;
-        this.processData(res);
-        this.cd.markForCheck();
+      .subscribe({
+        next: (res) => {
+          this.isLoaded = true;
+          this.processData(res);
+          this.onPlansKnown();
+        },
+        error: () => {
+          this.isLoaded = true;
+          this.onPlansKnown();
+        }
       });
+  }
+
+  private onPlansKnown(): void {
+    this.plansKnown = true;
+    if (this.selectedDayPending) {
+      this.loadSelectedDay();
+    }
+    this.cd.markForCheck();
+  }
+
+  private loadSelectedDay(): void {
+    if (!this.plansKnown) {
+      this.selectedDayPending = true;
+      return;
+    }
+    this.selectedDayPending = false;
+    const day = this.coreService.getStringDate(this.selectedDate);
+    const plan = this.noticeSpaceKey.find(p => this.coreService.getStringDate(p.startDate) === day);
+    if (plan) {
+      this.planSchemaId = plan.planSchemaId;
+      this.isClosed = plan.isClosed;
+      this.isOpen = plan.isOpen;
+      this.loadAdditionaSnapshotlData();
+    } else {
+      this.planSchemaId = null;
+      this.isClosed = false;
+      this.isOpen = false;
+      this.setWorkflowData(null);
+    }
   }
 
   setView(view): void {
@@ -829,10 +843,6 @@ export class DependenciesComponent {
   }
 
   // ===================================================================== loading
-
-  loadAdditionalData() {
-    this.loadData('workflows/boards', {controllerId: this.schedulerId});
-  }
 
   loadAdditionaSnapshotlData() {
     const day = this.coreService.getStringDate(this.selectedDate);
@@ -2703,7 +2713,7 @@ export class DependenciesComponent {
       ]
     }).subscribe((res) => {
       this.initConf();
-      this.loadAdditionalData();
+      this.loadSelectedDay();
       this.cd.markForCheck();
     });
   }
@@ -2716,7 +2726,7 @@ export class DependenciesComponent {
       ]
     }).subscribe((res) => {
       this.initConf();
-      this.loadAdditionalData();
+      this.loadSelectedDay();
       this.cd.markForCheck();
     });
   }
@@ -2764,20 +2774,7 @@ export class DependenciesComponent {
       if (shouldLoadSnapshot) {
         // events often arrive in bursts: reload once, shortly after the last one
         clearTimeout(this.refreshTimer);
-        this.refreshTimer = setTimeout(() => {
-          const formattedDate = this.coreService.getStringDate(this.selectedDate);
-          const matchingPlan = this.noticeSpaceKey.find(p =>
-            this.coreService.getStringDate(p.startDate) === formattedDate
-          );
-          if (matchingPlan) {
-            this.loadAdditionaSnapshotlData();
-          } else {
-            this.planSchemaId = null;
-            this.isClosed = false;
-            this.isOpen = false;
-            this.setWorkflowData(null);
-          }
-        }, 1000);
+        this.refreshTimer = setTimeout(() => this.loadSelectedDay(), 1000);
       }
     }
   }

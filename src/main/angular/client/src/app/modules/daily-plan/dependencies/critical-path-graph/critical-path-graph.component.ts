@@ -172,7 +172,7 @@ const WAYPOINT_H = 2;
 const WAYPOINT_GAP = 6;
 const WAYPOINT_MARGIN = 10;
 const WAYPOINT_LIMIT = 10000;
-const EDGE_CLASSES = ['posted', 'expected', 'announced', 'impossible', 'optional'];
+const EDGE_CLASSES = ['posted', 'expected', 'announced', 'none', 'impossible', 'optional'];
 const MARKER_CLASSES = [...EDGE_CLASSES, 'fold'];
 
 let instanceCounter = 0;
@@ -359,16 +359,10 @@ export class CriticalPathGraphComponent implements OnChanges, AfterViewInit, OnD
   }
 
   boardClass(b: CriticalPathGraphBoard): string {
-    if (b.noPoster && b.value === 'no') {
-      return 'noposter';
-    }
-    if (b.value === 'yes') {
-      return 'posted';
-    }
     if (b.value === 'no') {
-      return 'impossible';
+      return b.noPoster ? 'noposter' : 'impossible';
     }
-    return b.state === 'announced' ? 'announced' : 'expected';
+    return b.state;
   }
 
   boardStateKey(b: CriticalPathGraphBoard): string {
@@ -593,7 +587,7 @@ export class CriticalPathGraphComponent implements OnChanges, AfterViewInit, OnD
       }
       const ls = c.folded.map(b => (linksOf.get(b) || []).find(l => isReceiveLink(l) && l.workflow === w)).filter(Boolean);
       const cls = ls.every(l => l.optional) ? 'optional'
-        : ls.some(l => !l.optional && this.linkClass(l, boardOf.get(l.board)) === 'impossible') ? 'impossible' : 'expected';
+        : ls.some(l => !l.optional && this.linkClass(l, boardOf.get(l.board)) === 'impossible') ? 'impossible' : 'none';
       specs.push({from: cn, to: wn, cls, title: t('dailyPlan.dependencies.graph.cluster', {count: c.info.count})});
     });
 
@@ -1096,13 +1090,8 @@ export class CriticalPathGraphComponent implements OnChanges, AfterViewInit, OnD
     if (l.optional) {
       return 'optional';
     }
-    if (board.value === 'yes') {
-      return 'posted';
-    }
-    if (board.value === 'no') {
-      return 'impossible';
-    }
-    return board.state === 'announced' ? 'announced' : 'expected';
+    const cls = this.boardClass(board);
+    return cls === 'noposter' ? 'impossible' : cls;
   }
 
   plural(key: string, count: number): string {

@@ -117,16 +117,20 @@ $cpg-tint: rgba(128, 128, 160, 0.10);
 }
 
 .cpg-edge-posted {
-  stroke: var(--green);
+  stroke: var(--blue);
 }
 
 .cpg-edge-expected {
-  stroke: $cpg-none;
+  stroke: var(--yellow-green);
 }
 
 .cpg-edge-announced {
-  stroke: var(--blue);
+  stroke: var(--dimgrey);
   stroke-dasharray: 6 4;
+}
+
+.cpg-edge-none {
+  stroke: $cpg-none;
 }
 
 .cpg-edge-impossible {
@@ -219,11 +223,15 @@ $cpg-tint: rgba(128, 128, 160, 0.10);
 }
 
 .cpg-simple-board-posted .cpg-simple-box {
-  stroke: var(--green);
+  stroke: var(--blue);
+}
+
+.cpg-simple-board-expected .cpg-simple-box {
+  stroke: var(--yellow-green);
 }
 
 .cpg-simple-board-announced .cpg-simple-box {
-  stroke: var(--blue);
+  stroke: var(--dimgrey);
   stroke-dasharray: 4 3;
 }
 
@@ -246,11 +254,15 @@ $cpg-tint: rgba(128, 128, 160, 0.10);
 }
 
 .cpg-arrow-posted {
-  fill: var(--green);
+  fill: var(--blue);
+}
+
+.cpg-arrow-expected {
+  fill: var(--yellow-green);
 }
 
 .cpg-arrow-announced {
-  fill: var(--blue);
+  fill: var(--dimgrey);
 }
 
 .cpg-arrow-impossible {
@@ -442,18 +454,26 @@ $cpg-tint: rgba(128, 128, 160, 0.10);
 }
 
 .cpg-board-posted {
-  border-color: var(--green);
+  border-color: var(--blue);
 
   .cpg-state {
-    color: var(--green);
+    color: var(--blue);
+  }
+}
+
+.cpg-board-expected {
+  border-color: var(--yellow-green);
+
+  .cpg-state {
+    color: var(--yellow-green);
   }
 }
 
 .cpg-board-announced {
-  border: 1px dashed var(--blue);
+  border: 1px dashed var(--dimgrey);
 
   .cpg-state {
-    color: var(--blue);
+    color: var(--dimgrey);
   }
 }
 
@@ -466,7 +486,7 @@ $cpg-tint: rgba(128, 128, 160, 0.10);
   }
 }
 
-.cpg-board-expected .cpg-state {
+.cpg-board-none .cpg-state {
   opacity: 0.75;
 }
 
