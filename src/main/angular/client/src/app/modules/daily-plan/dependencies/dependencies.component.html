@@ -115,6 +115,8 @@
         }
         @if (mode === 'timeline') {
           <app-timeline-list [rows]="timelineRows" [now]="timelineNow" [formatTime]="formatTimelineTime"
+                             [formatAxis]="formatTimelineAxis" [canModify]="canModifyStartTimes"
+                             (applyPlan)="applyTimelinePlan($event)" [auditLog]="timelineAuditLog"
                              [expanded]="expandedIds" (toggleRow)="toggleTimelineRow($event)"
                              (setTarget)="setTimelineTarget($event)" (clearTarget)="clearTimelineTarget($event)"
                              (openDependencies)="emitSwitchView($event, 'dependencies')"

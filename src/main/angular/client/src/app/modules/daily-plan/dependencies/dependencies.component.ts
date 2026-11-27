@@ -24,7 +24,7 @@ import {ConfirmModalComponent} from 'src/app/components/comfirm-modal/confirm.co
 import {catchError, debounceTime, map, switchMap, takeUntil} from "rxjs/operators";
 import {TranslateService} from "@ngx-translate/core";
 import {InventoryObject} from "../../../models/enums";
-import {computePathTiming, PathTiming, planForTarget, TargetPlan, testAverageMs, WorkflowFacts} from '../dependencies-timeline/critical-path-timing';
+import {computePathTiming, PathTiming, planForTarget, TargetPlan, WorkflowDurations, WorkflowFacts} from '../dependencies-timeline/critical-path-timing';
 import {TimelineRow} from '../dependencies-timeline/timeline-list.component';
 import {
   BoardState,
@@ -45,7 +45,8 @@ import {
   boardStateOf,
   groupBoards,
   PlanOrder,
-  boardValue
+  boardValue,
+  nameOf
 } from './dependency-graph.model';
 import {
   CriticalPathGraphBoard,
@@ -205,6 +206,11 @@ const VIEW_MODE_KEY = 'dailyPlanDependenciesView';
  * elements) blocks the browser for seconds, while building the step list itself takes milliseconds.
  */
 const STEP_PAGE = 50;
+/**
+ * JOC-2343: time consumption statistics are calculated by the server on the fly from the order history;
+ * they change slowly, so they are cached for 10 minutes per Plan day (not requested on every event).
+ */
+const TIME_CONSUMPTION_TTL = 10 * 60000;
 /** linear runs longer than this are folded; the first and last FOLD_KEEP steps stay visible */
 const FOLD_MIN_LENGTH = 8;
 const FOLD_KEEP = 2;
@@ -361,10 +367,13 @@ export class DependenciesComponent {
   /** start / end of the first order of the Plan day per workflow, from the order history */
   private historyTimes = new Map<string, { start: number | null; end: number | null; planned: number | null }>();
   /**
-   * Average time consumption per workflow (ms) from the server; null until the API exists: then test
-   * data is used and marked as such.
+   * Time consumption per workflow from the API workflows/time_consumption (by full path and by name).
+   * Calculated on the fly from the order history by the server, so it is cached: per Plan day and for
+   * TIME_CONSUMPTION_TTL, and only workflows not yet known are requested again.
    */
-  private timelineDurations: Map<string, number> | null = null;
+  private timeConsumption = new Map<string, WorkflowDurations>();
+  private timeConsumptionDay: string | null = null;
+  private timeConsumptionAt = 0;
   private timelineCache = new Map<string, { timing: PathTiming; plan: TargetPlan | null }>();
   private pendingFocus: string | null = null;
   /** number of steps rendered per opened Critical Path (STEP_PAGE steps at first) */
@@ -889,6 +898,65 @@ export class DependenciesComponent {
    * result is right even if the API ignores parts of it.
    * Returns null if the history cannot be read: the model then uses posted notices instead.
    */
+  /**
+   * JOC-2343: average time consumption per workflow (API workflows/time_consumption, values in seconds).
+   * count 0 = no data. For cyclic workflows the duration of one cycle (cycleStatistics) is used.
+   * The server calculates the statistics on the fly from the order history, so the result is cached per
+   * Plan day for TIME_CONSUMPTION_TTL: event-driven reloads only request workflows not yet known.
+   * Errors leave the workflows without data ("no data"); the view must not break.
+   */
+  private loadTimeConsumption(day: string, workflowPaths: string[]): Observable<boolean> {
+    const expired = Date.now() - this.timeConsumptionAt > TIME_CONSUMPTION_TTL;
+    if (day !== this.timeConsumptionDay || expired) {
+      this.timeConsumption.clear();
+      this.timeConsumptionDay = day;
+      this.timeConsumptionAt = Date.now();
+    }
+    const missing = Array.from(new Set(workflowPaths)).filter(p => !this.timeConsumption.has(p));
+    if (missing.length === 0) {
+      return of(true);
+    }
+    const started = performance.now();
+    const toMs = (v: any) => (typeof v === 'number' ? v * 1000 : null);
+    return this.coreService.post('workflows/time_consumption', {
+      controllerId: this.schedulerId,
+      // versionId is optional: without it the statistics of the workflow (current version) are returned
+      workflowIds: missing.map(path => ({path}))
+    }).pipe(
+      map((res: any) => {
+        (res?.workflows || []).forEach((w: any) => {
+          const cycle = w?.cycleStatistics;
+          const useCycle = !!cycle && cycle.count > 0;
+          const st = useCycle ? cycle : (w?.statistics || {count: 0});
+          const d: WorkflowDurations = {
+            avgMs: st.count > 0 ? toMs(st.average) : null,
+            minMs: st.count > 0 ? toMs(st.min) : null,
+            maxMs: st.count > 0 ? toMs(st.max) : null,
+            count: st.count || 0,
+            perCycle: useCycle
+          };
+          // the response returns full paths; keep them also by name in case the request used names
+          if (w?.path) {
+            this.timeConsumption.set(w.path, d);
+            this.timeConsumption.set(nameOf(w.path), d);
+          }
+        });
+        // requested workflows without an entry in the response: no data (not requested again until expiry)
+        missing.forEach(p => {
+          if (!this.timeConsumption.has(p)) {
+            this.timeConsumption.set(p, {avgMs: null, minMs: null, maxMs: null, count: 0, perCycle: false});
+          }
+        });
+        console.debug('[Timeline] time_consumption:', missing.length, 'workflows in', Math.round(performance.now() - started), 'ms');
+        return true;
+      }),
+      catchError(err => {
+        console.warn('[Timeline] workflows/time_consumption failed; durations are shown as "no data".', err);
+        return of(false);
+      })
+    );
+  }
+
   private loadOrderHistory(day: string, workflowPaths: string[]): Observable<Set<string> | null> {
     if (workflowPaths.length === 0) {
       return of(new Set<string>());
@@ -1052,7 +1120,9 @@ export class DependenciesComponent {
     const request: Observable<Loaded> = planDay
       ? snapshot$.pipe(switchMap(res => {
         const paths = this.snapshotWorkflowPaths(res);
-        return forkJoin([this.loadControllerOrders(planDay, paths), this.loadOrderHistory(planDay, paths)])
+        // Timeline: time consumption of the workflows (cached; nothing is requested in the Dependencies view)
+        const durations$ = this.mode === 'timeline' ? this.loadTimeConsumption(planDay, paths) : of(true);
+        return forkJoin([this.loadControllerOrders(planDay, paths), this.loadOrderHistory(planDay, paths), durations$])
           .pipe(map(([items, done]) => [res, items, done] as Loaded));
       }))
       : snapshot$.pipe(map(res => [res, null, null] as Loaded));
@@ -1477,9 +1547,9 @@ export class DependenciesComponent {
     return this.expandedPosts.has(path);
   }
 
-  /** "Circular dependency: A → B → C → A …" for a Critical Path whose workflows wait for each other. */
+  /** "Circular dependency: A â†’ B â†’ C â†’ A â€¦" for a Critical Path whose workflows wait for each other. */
   cycleParts(g: DepGroup): RichPart[] {
-    return g.cycle ? this.rich('dailyPlan.dependencies.message.cycle', {path: g.cycle}, {path: 'wf'}, ' → ') : [];
+    return g.cycle ? this.rich('dailyPlan.dependencies.message.cycle', {path: g.cycle}, {path: 'wf'}, ' â†’ ') : [];
   }
 
   private get pagingList(): DepGroup[] {
@@ -1579,7 +1649,7 @@ export class DependenciesComponent {
     return 'dailyPlan.dependencies.orderState.' + cat.state;
   }
 
-  /** Full explanation of a category, e.g. "Order State Change Required: … is suspended …". */
+  /** Full explanation of a category, e.g. "Order State Change Required: â€¦ is suspended â€¦". */
   categoryTooltip(cat: PathCategory): string {
     if (cat.kind === 'missing' || cat.kind === 'success') {
       return this.translate.instant('dailyPlan.dependencies.category.tooltip.' + cat.kind);
@@ -1669,7 +1739,7 @@ export class DependenciesComponent {
       }
       const all: string[] = Array.isArray(params[k]) ? params[k] : [params[k]];
       // long lists of names (e.g. thousands of blocked workflows) show the notice limit and "+N more";
-      // a circle (separator " → ") is always shown in full
+      // a circle (separator " â†’ ") is always shown in full
       const list = separator === ', ' && all.length > this.noticeLimit ? all.slice(0, this.noticeLimit) : all;
       marked[k] = list.map(v => {
         values.push({t: objects[k], v});
@@ -1778,6 +1848,11 @@ export class DependenciesComponent {
   }
 
   /** Facts per workflow of the path: first order of the day, history times, average time consumption. */
+  /** Time consumption of a workflow (by full path, else by name); undefined if not loaded. */
+  private durationsOf(path: string): WorkflowDurations | undefined {
+    return this.timeConsumption.get(path) ?? this.timeConsumption.get(nameOf(path));
+  }
+
   private workflowFacts(g: DepGroup): Map<string, WorkflowFacts> {
     const v = this.getGroupView(g);
     const facts = new Map<string, WorkflowFacts>();
@@ -1787,11 +1862,9 @@ export class DependenciesComponent {
         .sort((a: any, b: any) => (a.scheduledFor ?? Infinity) - (b.scheduledFor ?? Infinity));
       const first: any = orders[0] || null;
       const hist = this.historyTimes.get(n.path);
-      const server = this.timelineDurations?.get(n.path);
       facts.set(n.path, {
-        avgMs: server ?? testAverageMs(n.path),
+        avgMs: this.durationsOf(n.path)?.avgMs ?? null,
         // a path without any order: every workflow is listed (as missing), as in the Dependencies view
-        testData: server === undefined,
         state: first ? String(first.state?._text || first.state || '') : null,
         orderId: first?.orderId ?? null,
         completed: n.completed,
@@ -1826,11 +1899,16 @@ export class DependenciesComponent {
     const stateClass = new Map<string, string>();
     const reasonKey = new Map<string, string>();
     const orderCount = new Map<string, number>();
+    const durations = new Map<string, WorkflowDurations>();
     v.order.forEach(n => {
       names.set(n.path, this.getFormattedPath(n.path));
       stateClass.set(n.path, this.stateClass(n));
       reasonKey.set(n.path, this.stateLabelKey(n));
       orderCount.set(n.path, (n.orderIds || []).length);
+      const du = this.durationsOf(n.path);
+      if (du) {
+        durations.set(n.path, du);
+      }
     });
     const ends = g.ends.length ? g.ends : g.nodes;
     return {
@@ -1841,7 +1919,7 @@ export class DependenciesComponent {
       severity: this.groupSeverity(g),
       timing, plan,
       target: this.timelineTargets.get(g.id) ?? null,
-      names, stateClass, reasonKey, orderCount
+      names, stateClass, reasonKey, orderCount, durations
     };
   }
 
@@ -1854,9 +1932,10 @@ export class DependenciesComponent {
     if (!g) {
       return;
     }
-    const [h, m] = e.time.split(':').map(Number);
+    // hh:mm or hh:mm:ss
+    const [h, m, sec] = e.time.split(':').map(Number);
     const day = new Date(this.selectedDate);
-    day.setHours(h, m, 0, 0);
+    day.setHours(h, m, sec || 0, 0);
     let target = day.getTime();
     const start = this.timelineOf(g).timing.start;
     if (start !== null && target < start) {
@@ -1876,7 +1955,93 @@ export class DependenciesComponent {
   }
 
   /** formats a time in the user's time zone */
-  formatTimelineTime = (ms: number): string => this.coreService.getDateByFormat(new Date(ms), this.preferences?.zone, 'HH:mm');
+  /**
+   * Time format of the Timeline: the time part of the user's date format (profile), always with seconds -
+   * executions often take seconds only, so start and end would otherwise show the same time
+   * (e.g. "HH:mm:ss" or "hh:mm:ss A"). The axis of the Gantt chart uses the same format without seconds.
+   */
+  private timelineTimeFormat(withSeconds: boolean): string {
+    const m = /(H{1,2}|h{1,2}):mm(:ss)?(\s*[aA])?/.exec(String(this.preferences?.dateFormat || ''));
+    const hours = m ? m[1] : 'HH';
+    const ampm = m && m[3] ? m[3] : '';
+    return hours + ':mm' + (withSeconds ? ':ss' : '') + ampm;
+  }
+
+  formatTimelineTime = (ms: number): string =>
+    this.coreService.getDateByFormat(new Date(ms), this.preferences?.zone, this.timelineTimeFormat(true));
+  formatTimelineAxis = (ms: number): string =>
+    this.coreService.getDateByFormat(new Date(ms), this.preferences?.zone, this.timelineTimeFormat(false));
+
+  /** Permission to modify Order start times: the same as "Set start time" in the Daily Plan. */
+  get canModifyStartTimes(): boolean {
+    return !!this.permission?.currentController?.orders?.modify;
+  }
+
+  /**
+   * "Modify start times" (confirmed in the Timeline list): moves the Orders of the plan for the target
+   * to their latest start, or - if the target cannot be met - to their earliest start. daily_plan/orders/modify sets ONE start time for all Orders of a request, so the
+   * Orders are grouped by their new start time (one request per time). Cyclic Orders are not moved (they
+   * would need a cycle). stickDailyPlanDate keeps the Orders in the selected Plan day, also for a target
+   * after midnight. Modified Orders may get new IDs (response: old ID -> new ID), so the view is reloaded.
+   */
+  applyTimelinePlan(e: { id: string; comments: any }): void {
+    const id = e.id;
+    const g = this.model?.groups.find(x => x.id === id);
+    const plan = g ? this.timelineOf(g).plan : null;
+    if (!plan || !this.canModifyStartTimes) {
+      return;
+    }
+    const byTime = new Map<string, string[]>();
+    plan.entries.filter(e => e.move && e.orderId && e.newStart !== null).forEach(e => {
+      const order: any = this.getOrderDetails(e.orderId);
+      if (order?.cyclicOrder) {
+        return;
+      }
+      // the start of the plan: latest start (target) or earliest start (target cannot be met); a start
+      // within the next minute is sent as "now" (an exact time could already be in the past)
+      const when = e.newStart <= Date.now() + 60000 ? 'now'
+        : this.coreService.getDateByFormat(new Date(e.newStart), this.preferences?.zone, 'YYYY-MM-DD HH:mm:ss');
+      byTime.set(when, [...(byTime.get(when) || []), e.orderId]);
+    });
+    if (byTime.size === 0) {
+      return;
+    }
+    // the audit log comment was entered in the confirmation dialog (same fields as in the other dialogs)
+    const auditLog: any = {};
+    if (e.comments) {
+      this.coreService.getAuditLogObj(e.comments, auditLog);
+    }
+    this.modifyStartTimes(byTime, auditLog);
+  }
+
+  /**
+   * The confirmation dialog shows the audit log fields if the profile asks for comments or logging is
+   * enforced for the session (as the other dialogs); app-audit-log-input itself makes them required then.
+   */
+  get timelineAuditLog(): boolean {
+    return sessionStorage['$SOS$FORCELOGING'] === 'true' || !!this.preferences?.auditLog;
+  }
+
+  private modifyStartTimes(byTime: Map<string, string[]>, auditLog: any): void {
+    const requests = Array.from(byTime.entries()).map(([scheduledFor, orderIds]) =>
+      this.coreService.post('daily_plan/orders/modify', {
+        controllerId: this.schedulerId,
+        orderIds,
+        scheduledFor,
+        timeZone: this.preferences?.zone,
+        stickDailyPlanDate: true,
+        auditLog
+      }).pipe(catchError(err => {
+        // the error is reported by the request handling; the other requests continue
+        console.warn('[Timeline] daily_plan/orders/modify failed for', orderIds, err);
+        return of(null);
+      })));
+    forkJoin(requests).subscribe(() => {
+      // Orders may have new IDs and new start times: reload (events follow as well)
+      this.loadAdditionaSnapshotlData();
+      this.cd.markForCheck();
+    });
+  }
 
   /** orders side panel for a workflow of the Timeline list */
   showTimelineOrders(path: string): void {
@@ -2214,7 +2379,7 @@ export class DependenciesComponent {
     this.sideBar.orders = (node?.orderIds || []).map(id => this.getOrderDetails(id)).filter(Boolean);
   }
 
-  /** Reason text from the same order state as the dot: "Blocked Order", "Waiting", "Missing Order" … */
+  /** Reason text from the same order state as the dot: "Blocked Order", "Waiting", "Missing Order" â€¦ */
   stateLabelKey(node: DepNode): string {
     const st = this.nodeOrderState(node);
     if (!st) {

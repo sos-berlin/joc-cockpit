@@ -5,7 +5,8 @@
  * levels, notice edges) comes from the Dependencies analysis; this file only adds time.
  *
  * Definitions (agreed with Andreas):
- * - net time: execution time of a workflow = its average time consumption (from successful runs);
+ * - net time: execution time of a workflow = its average time consumption from the order history (API
+ *   workflows/time_consumption: a statistical average without outliers; per cycle for cyclic workflows);
  * - gross time: includes waiting for notices; saving = gross - net (time a user can gain);
  * - the first set of orders counts (one entry per workflow, the earliest order of the Plan day);
  * - failed, suspended, broken or blocked orders delay the path: the estimate assumes they are resolved now;
@@ -13,14 +14,26 @@
  */
 import {DepEdge, DepNode} from '../dependencies/dependency-graph.model';
 
+/**
+ * Time consumption of a workflow from the API workflows/time_consumption (converted to ms).
+ * count 0 = no data: avgMs is null.
+ */
+export interface WorkflowDurations {
+  avgMs: number | null;
+  minMs: number | null;
+  maxMs: number | null;
+  /** number of executions the statistics are based on */
+  count: number;
+  /** the values are the duration of one cycle (cyclic workflow) */
+  perCycle: boolean;
+}
+
 export type TimingStatus = 'completed' | 'running' | 'waiting' | 'scheduled' | 'intervention' | 'missing' | 'unneeded';
 
 /** What is known about a workflow of the path on the Plan day. */
 export interface WorkflowFacts {
   /** average time consumption in ms; null = no data */
   avgMs: number | null;
-  /** the average is test data (until the server provides it) */
-  testData?: boolean;
   /** state of the first order of the Plan day (upper case), null = no order */
   state: string | null;
   orderId?: string | null;
@@ -39,12 +52,14 @@ export interface WorkflowTiming {
   path: string;
   status: TimingStatus;
   avgMs: number | null;
-  testData: boolean;
   plannedStart: number | null;
   estStart: number | null;
   estEnd: number | null;
   /** waiting for notices before the start (ms) */
   waitMs: number;
+  /** estStart / estEnd are the actual times from the order history (completed workflow) */
+  actualStart: boolean;
+  actualEnd: boolean;
   /** the order can be moved (not started yet) */
   movable: boolean;
   orderId: string | null;
@@ -64,7 +79,6 @@ export interface PathTiming {
   interventionNeeded: boolean;
   /** at least one workflow on the critical chain has no time consumption data */
   noData: boolean;
-  testData: boolean;
   netMs: number;
   grossMs: number;
   savingMs: number;
@@ -77,7 +91,11 @@ export interface TargetPlanEntry {
   orderId: string | null;
   latestStart: number;
   latestEnd: number;
-  /** the order is moved to latestStart */
+  /** earliest possible start if every movable order starts as early as possible (null: cannot start) */
+  earliestStart: number | null;
+  /** the start time the order gets when the plan is applied: latestStart (target) or earliestStart */
+  newStart: number | null;
+  /** the order is moved to newStart */
   move: boolean;
   /** latestStart is in the past, or a started workflow ends after latestEnd */
   tooLate: boolean;
@@ -89,6 +107,12 @@ export interface TargetPlan {
   /** earliest possible completion if every movable order starts as early as possible */
   earliestEnd: number | null;
   reachable: boolean;
+  /**
+   * 'target': the target can be met, orders are moved to their latest start;
+   * 'earliest': the target cannot be met, orders are moved to their earliest start, so that the Critical
+   * Path completes as early as possible (agreed with Andreas).
+   */
+  mode: 'target' | 'earliest';
 }
 
 const RUNNING = ['RUNNING', 'INPROGRESS', 'PROMPTING'];
@@ -159,13 +183,18 @@ export function computePathTiming(order: DepNode[], levels: Map<string, number>,
     }
     const state = f.state ? f.state.toUpperCase() : null;
     const t: WorkflowTiming = {
-      path: n.path, status: 'scheduled', avgMs: f.avgMs, testData: !!f.testData, plannedStart: f.scheduledFor ?? null,
-      estStart: null, estEnd: null, waitMs: 0, movable: false, orderId: f.orderId ?? null, drivenBy
+      path: n.path, status: 'scheduled', avgMs: f.avgMs, plannedStart: f.scheduledFor ?? null,
+      estStart: null, estEnd: null, waitMs: 0, movable: false, orderId: f.orderId ?? null, drivenBy,
+      actualStart: false, actualEnd: false
     };
     if (f.completed || state === 'FINISHED' || state === 'COMPLETED') {
       t.status = 'completed';
-      t.estEnd = f.endedAt ?? f.startedAt ?? now;
-      t.estStart = f.startedAt ?? (t.estEnd - avg);
+      // actual times from the order history; without an end time the end is estimated as start + average
+      // (before: the start was used as end, so "Est. End" equalled "Start")
+      t.actualStart = f.startedAt !== null && f.startedAt !== undefined;
+      t.actualEnd = f.endedAt !== null && f.endedAt !== undefined;
+      t.estEnd = t.actualEnd ? f.endedAt : (t.actualStart ? f.startedAt + avg : now);
+      t.estStart = t.actualStart ? f.startedAt : (t.estEnd - avg);
       t.drivenBy = drivenBy;
     } else if (!state) {
       if (f.neededMissing) {
@@ -176,6 +205,7 @@ export function computePathTiming(order: DepNode[], levels: Map<string, number>,
       }
     } else if (RUNNING.includes(state)) {
       t.status = 'running';
+      t.actualStart = f.startedAt !== null && f.startedAt !== undefined;
       t.estStart = f.startedAt ?? f.scheduledFor ?? now;
       t.estEnd = Math.max(now, t.estStart + avg);
     } else if (upOpen) {
@@ -231,7 +261,6 @@ export function computePathTiming(order: DepNode[], levels: Map<string, number>,
   return {
     workflows, rows, start, estEnd, cannotComplete, interventionNeeded,
     noData: chainTimings.some(t => t.avgMs === null) || rows.some(t => t.avgMs === null),
-    testData: rows.some(t => t.testData),
     netMs, grossMs, savingMs: Math.max(0, grossMs - netMs), chain
   };
 }
@@ -261,21 +290,22 @@ export function planForTarget(order: DepNode[], levels: Map<string, number>, edg
     latestStart.set(n.path, ls);
     const started = t.status === 'completed' || t.status === 'running' || t.status === 'waiting';
     const tooLate = t.movable ? ls < now : (started && t.status !== 'completed' && t.estEnd !== null && t.estEnd > latestEnd);
-    entries.push({path: n.path, orderId: t.orderId, latestStart: ls, latestEnd, move: t.movable && !tooLate, tooLate});
+    entries.push({path: n.path, orderId: t.orderId, latestStart: ls, latestEnd, earliestStart: null, newStart: ls,
+      move: t.movable && !tooLate, tooLate});
   }
   entries.reverse();
   const earliest = computePathTiming(order, levels, edges, facts, now, true);
-  return {
-    target, entries, earliestEnd: earliest.estEnd,
-    reachable: earliest.estEnd !== null && earliest.estEnd <= target && !entries.some(e => e.tooLate && !e.move && e.orderId)
-  };
-}
-
-/** Test data for time consumption until the server provides averages: stable per workflow, 5-45 min. */
-export function testAverageMs(path: string): number {
-  let h = 0;
-  for (let i = 0; i < path.length; i++) {
-    h = (h * 31 + path.charCodeAt(i)) | 0;
+  const reachable = earliest.estEnd !== null && earliest.estEnd <= target && !entries.some(e => e.tooLate && !e.move && e.orderId);
+  entries.forEach(e => {
+    e.earliestStart = earliest.workflows.get(e.path)?.estStart ?? null;
+  });
+  if (!reachable) {
+    // target cannot be met: move the orders that can start earlier than planned to their earliest start
+    entries.forEach(e => {
+      const t = timing.workflows.get(e.path);
+      e.newStart = e.earliestStart;
+      e.move = !!t?.movable && e.earliestStart !== null && (t.plannedStart === null || e.earliestStart < t.plannedStart);
+    });
   }
-  return (5 + Math.abs(h) % 41) * 60000;
+  return {target, entries, earliestEnd: earliest.estEnd, reachable, mode: reachable ? 'target' : 'earliest'};
 }
