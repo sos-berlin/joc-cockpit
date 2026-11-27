@@ -220,12 +220,12 @@ export class HeaderComponent {
   }
 
   navToOrderNoti(index: number, data: any): void {
-    let filter = this.coreService.getMonitorTab();
+    const filter = this.coreService.getMonitorTab();
     filter.tabIndex = index;
-    if (index == 0) {
+    if (index === 2) {
       filter.orderNotification.filter.types = [data.level];
-    }else {
-      filter.systemNotification.filter.categories = data.category;
+    } else if (index === 3) {
+      filter.systemNotification.filter.categories = data.category || 'ALL';
       filter.systemNotification.filter.types = [data.level];
     }
     this.router.navigate(['/monitor']).then();

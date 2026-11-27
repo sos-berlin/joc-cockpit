@@ -145,7 +145,7 @@ onInputChange(target): void {
       } else if (value.length === 5) {
         return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}0`;
       } else if (value.length === 6) {
-        return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}${value[5]}0`;
+        return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}${value[5]}`;
       } else if (value.length === 7) {
         return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}${value[5]}${value[6]}0`;
       }
@@ -1252,11 +1252,12 @@ export class TimeValidatorRelativeStartReqexDirective implements Validator {
       return;
     } else {
       if (target.value) {
+        if (target.value.endsWith('::')) {
+          target.value = target.value.slice(0, -1);
+        }
         if (target.value.length === 2 && /^([0-2][0-9])?$/i.test(target.value)) {
           if(!target.value.startsWith('+')){
-            if (parseInt(target.value)) {
-              target.value += ':';
-            }
+            target.value += ':';
           }
         } else if (target.value.length === 5 && /^([0-2][0-9]):([0-5][0-9])?$/i.test(target.value)) {
           target.value += ':';
