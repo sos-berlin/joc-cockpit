@@ -1039,7 +1039,7 @@ export class ModifyStartTimeModalComponent {
       } else if (value.length === 5) {
         return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}0`;
       } else if (value.length === 6) {
-        return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}${value[5]}0`;
+        return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}${value[5]}`;
       } else if (value.length === 7) {
         return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}${value[5]}${value[6]}0`;
       }
@@ -1060,7 +1060,7 @@ export class ModifyStartTimeModalComponent {
       } else if (num.length === 5) {
         return `${sign}${num[0]}${num[1]}:${num[2]}${num[3]}:${num[4]}0`;
       } else if (num.length === 6) {
-        return `${sign}${num[0]}${num[1]}:${num[2]}${num[3]}:${num[4]}${num[5]}0`;
+        return `${sign}${num[0]}${num[1]}:${num[2]}${num[3]}:${num[4]}${num[5]}`;
       } else if (num.length === 7) {
         return `${sign}${num[0]}${num[1]}:${num[2]}${num[3]}:${num[4]}${num[5]}${num[6]}0`;
       }

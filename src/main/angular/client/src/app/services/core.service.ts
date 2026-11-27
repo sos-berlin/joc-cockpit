@@ -4481,7 +4481,7 @@ private checkParentNode(lastPos, data, item, nodes): any {
       } else if (value.length === 5) {
         return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}0`;
       } else if (value.length === 6) {
-        return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}${value[5]}0`;
+        return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}${value[5]}`;
       } else if (value.length === 7) {
         return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}${value[5]}${value[6]}0`;
       }
