@@ -109,7 +109,8 @@ export class SystemNotificationComponent {
     if (this.filters.filter.date && this.filters.filter.date !== 'ALL') {
       obj.dateFrom = this.filters.filter.date;
     }
-    obj.categories = this.filters.filter.categories == 'ALL' ? ['JOC', 'SYSTEM', 'CONTROLLER', 'AGENT'] : [this.filters.filter.categories];
+    const category = this.filters.filter.categories;
+    obj.categories = (!category || category == 'ALL') ? ['JOC', 'SYSTEM', 'CONTROLLER', 'AGENT'] : [category];
 
     this.coreService.post('monitoring/sysnotifications', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
