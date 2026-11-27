@@ -66,7 +66,6 @@ $tl-none: #8a8aa8;
 .tl-warn { color: var(--orange); }
 .tl-ok { color: var(--green); }
 .tl-saving { color: var(--yellow-green); }
-.tl-test { color: var(--orange); }
 
 .tl-detail {
   padding: 8px 14px 14px 30px;
@@ -96,10 +95,6 @@ $tl-none: #8a8aa8;
   width: 80px;
 }
 
-.tl-note {
-  font-size: 12px;
-  opacity: 0.8;
-}
 
 // ---- Gantt
 .tl-gantt-wrap {
@@ -195,4 +190,33 @@ $tl-none: #8a8aa8;
   .fa {
     width: 12px;
   }
+}
+
+// actual end from the order history (completed workflow)
+.tl-actual {
+  margin-left: 4px;
+  color: var(--blue);
+  font-size: 11px;
+}
+
+// confirmation of start time modifications
+
+.tl-confirm-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.tl-confirm-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 90px 16px 100px;
+  gap: 8px;
+  align-items: center;
+  padding: 2px 0;
+}
+
+.tl-confirm-head {
+  font-weight: 600;
+  border-bottom: 1px solid $tl-line;
+  padding-bottom: 4px;
+  margin-bottom: 4px;
 }

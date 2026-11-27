@@ -84,7 +84,7 @@
                 }
                 @if (g.nowX !== null) {
                   <line [attr.x1]="g.nowX" [attr.x2]="g.nowX" y1="16" [attr.y2]="g.height - 20" class="tl-now-line"/>
-                  <text [attr.x]="g.nowX" y="12" text-anchor="middle" class="tl-axis tl-now-label">{{ 'dailyPlan.timeline.label.now' | translate }} {{ time(now) }}</text>
+                  <text [attr.x]="g.nowX" y="12" text-anchor="middle" class="tl-axis tl-now-label">{{ 'dailyPlan.timeline.label.now' | translate }} {{ formatAxis(now) }}</text>
                 }
               </svg>
             </div>
@@ -100,15 +100,17 @@
             <div class="tl-wf-row tl-head">
               <span [appRichTooltip]="'dailyPlan.timeline.tooltip.inner.workflow' | translate">{{ 'dailyPlan.dependencies.label.workflow' | translate }}</span>
               <span [appRichTooltip]="'dailyPlan.timeline.tooltip.inner.reason' | translate">{{ 'dailyPlan.dependencies.label.state' | translate }}</span>
-              <span [appRichTooltip]="(r.timing.testData ? 'dailyPlan.timeline.tooltip.inner.averageTest' : 'dailyPlan.timeline.tooltip.inner.average') | translate">
-                {{ 'dailyPlan.timeline.label.average' | translate }}@if (r.timing.testData) {<sup class="tl-test">*</sup>}
-              </span>
+              <span [appRichTooltip]="'dailyPlan.timeline.tooltip.inner.average' | translate">{{ 'dailyPlan.timeline.label.average' | translate }}</span>
               <span [appRichTooltip]="'dailyPlan.timeline.tooltip.inner.planned' | translate">{{ 'dailyPlan.timeline.label.planned' | translate }}</span>
               <span [appRichTooltip]="'dailyPlan.timeline.tooltip.inner.workflowStart' | translate">{{ 'dailyPlan.timeline.label.start' | translate }}</span>
               <span [appRichTooltip]="'dailyPlan.timeline.tooltip.inner.workflowEnd' | translate">{{ 'dailyPlan.timeline.label.estimatedEnd' | translate }}</span>
               <span [appRichTooltip]="'dailyPlan.timeline.tooltip.inner.wait' | translate">{{ 'dailyPlan.timeline.label.wait' | translate }}</span>
               @if (r.plan) {
-                <span [appRichTooltip]="'dailyPlan.timeline.tooltip.inner.latestStart' | translate">{{ 'dailyPlan.timeline.label.latestStart' | translate }}</span>
+                @if (r.plan.mode === 'earliest') {
+                  <span [appRichTooltip]="'dailyPlan.timeline.tooltip.inner.earliestStart' | translate">{{ 'dailyPlan.timeline.label.earliestStart' | translate }}</span>
+                } @else {
+                  <span [appRichTooltip]="'dailyPlan.timeline.tooltip.inner.latestStart' | translate">{{ 'dailyPlan.timeline.label.latestStart' | translate }}</span>
+                }
               }
             </div>
             @for (w of r.timing.rows; track w.path) {
@@ -122,17 +124,31 @@
                     {{ r.reasonKey.get(w.path) | translate }}
                   }
                 </span>
-                <span>{{ w.avgMs === null ? ('dailyPlan.timeline.label.noData' | translate) : duration(w.avgMs) }}</span>
+                @if (durationParams(r, w.path); as dp) {
+                  <span [appRichTooltip]="'dailyPlan.timeline.tooltip.averageDetail' | translate: dp">
+                    {{ duration(w.avgMs) }}
+                    @if (isPerCycle(r, w.path)) {
+                      <span class="text-muted">{{ 'dailyPlan.timeline.label.perCycle' | translate }}</span>
+                    }
+                  </span>
+                } @else {
+                  <span class="text-muted" [appRichTooltip]="'dailyPlan.timeline.tooltip.noData' | translate">{{ 'dailyPlan.timeline.label.noData' | translate }}</span>
+                }
                 <span>{{ time(w.plannedStart) }}</span>
                 <span>{{ time(w.estStart) }}</span>
-                <span>{{ time(w.estEnd) }}</span>
+                <span>
+                  {{ time(w.estEnd) }}
+                  @if (w.actualEnd) {
+                    <i class="fa fa-check tl-actual" [appRichTooltip]="'dailyPlan.timeline.tooltip.actualEnd' | translate"></i>
+                  }
+                </span>
                 <span [class.tl-saving]="w.waitMs > 0">{{ w.waitMs > 0 ? duration(w.waitMs) : '—' }}</span>
                 @if (r.plan) {
                   @if (planEntry(r, w.path); as e) {
-                    <span [class.tl-warn]="e.tooLate" [class.tl-ok]="e.move">
-                      {{ time(e.latestStart) }}
+                    <span [class.tl-warn]="r.plan.mode === 'target' && e.tooLate" [class.tl-ok]="e.move">
+                      {{ time(e.newStart) }}
                       @if (e.move) { <i class="fa fa-arrow-right" [appRichTooltip]="'dailyPlan.timeline.tooltip.willMove' | translate"></i> }
-                      @if (e.tooLate) { <i class="fa fa-exclamation-triangle" [appRichTooltip]="'dailyPlan.timeline.tooltip.tooLate' | translate"></i> }
+                      @if (r.plan.mode === 'target' && e.tooLate) { <i class="fa fa-exclamation-triangle" [appRichTooltip]="'dailyPlan.timeline.tooltip.tooLate' | translate"></i> }
                     </span>
                   } @else {
                     <span>—</span>
@@ -146,10 +162,13 @@
           @if (canPlanTarget(r)) {
           <div class="tl-target">
             <span>{{ 'dailyPlan.timeline.label.targetEnd' | translate }}</span>
-            <input class="form-control input-sm tl-time" type="text" placeholder="hh:mm"
-                   [ngModel]="targetInput.get(r.id) || (r.target !== null ? time(r.target) : '')"
+            <input class="form-control input-sm tl-time" type="text" placeholder="HH:MM:SS"
+                   timevalidator validTimeReqex [ngModel]="targetInput.get(r.id) || (r.target !== null ? time(r.target) : '')"
                    (ngModelChange)="targetInput.set(r.id, $event)" (keydown.enter)="submitTarget(r)"/>
             <button type="button" class="btn btn-grey btn-xs" (click)="submitTarget(r)">{{ 'dailyPlan.timeline.button.calculate' | translate }}</button>
+            @if (targetError.has(r.id)) {
+              <span class="tl-warn">{{ 'dailyPlan.timeline.message.invalidTime' | translate }}</span>
+            }
             @if (r.target !== null) {
               <a class="tl-link" (click)="clearTarget.emit(r.id)">{{ 'dailyPlan.timeline.button.clearTarget' | translate }}</a>
             }
@@ -158,19 +177,60 @@
                 <span class="tl-ok">{{ 'dailyPlan.timeline.message.reachable' | translate }}</span>
               } @else {
                 <span class="tl-warn">{{ 'dailyPlan.timeline.message.notReachable' | translate: {time: time(r.plan.earliestEnd)} }}</span>
+                @if (moves(r).length > 0) {
+                  <span class="text-muted">{{ 'dailyPlan.timeline.message.moveEarliest' | translate }}</span>
+                }
               }
-              <button type="button" class="btn btn-primary btn-xs" [disabled]="!canModify || !r.plan.reachable" (click)="applyPlan.emit(r.id)"
-                      [appRichTooltip]="canModify ? '' : ('dailyPlan.timeline.tooltip.applyPending' | translate)">
+              <button type="button" class="btn btn-primary btn-xs" [disabled]="!canModify || moves(r).length === 0"
+                      (click)="askModify(r)"
+                      [appRichTooltip]="!canModify ? ('dailyPlan.timeline.tooltip.noPermission' | translate)
+                        : (moves(r).length === 0 ? ('dailyPlan.timeline.message.nothingToMove' | translate) : '')">
                 {{ 'dailyPlan.timeline.button.apply' | translate }}
               </button>
             }
           </div>
-          }
-          @if (r.timing.testData) {
-            <div class="tl-note"><sup class="tl-test">*</sup> {{ 'dailyPlan.timeline.tooltip.testData' | translate }}</div>
           }
         </div>
       }
     </div>
   }
 </div>
+
+<!-- confirmation dialog of "Modify start times" (opened with NzModalService) -->
+<ng-template #modifyConfirm>
+  @if (confirmRow; as r) {
+    <div class="modal-header">
+      <h4 class="modal-title">{{ 'dailyPlan.timeline.button.apply' | translate }}</h4>
+      <button (click)="cancelModify()" aria-label="Close" class="close" type="button">
+        <span aria-hidden="true" class="fa fa-times-circle"></span>
+      </button>
+    </div>
+    <form #modifyForm="ngForm" (ngSubmit)="confirmModify()">
+    <div class="modal-body p-a">
+      @if (auditLog) {
+        <!-- audit log comment, as in the other dialogs; required if logging is enforced for the session -->
+        <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
+      }
+      <div class="tl-confirm-title">{{ 'dailyPlan.timeline.label.confirmModify' | translate }}</div>
+      <div class="tl-confirm-row tl-confirm-head">
+        <span>{{ 'dailyPlan.dependencies.label.workflow' | translate }}</span>
+        <span>{{ 'dailyPlan.timeline.label.planned' | translate }}</span>
+        <span></span>
+        <span>{{ 'dailyPlan.timeline.label.newStart' | translate }}</span>
+      </div>
+      @for (e of moves(r); track e.path) {
+        <div class="tl-confirm-row">
+          <span class="tl-name" [appRichTooltip]="e.path">{{ r.names.get(e.path) }}</span>
+          <span class="text-muted">{{ time(r.timing.workflows.get(e.path)?.plannedStart ?? null) }}</span>
+          <i class="fa fa-arrow-right"></i>
+          <span class="tl-ok">{{ time(e.newStart) }}</span>
+        </div>
+      }
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!modifyForm.form.valid">{{ 'dailyPlan.timeline.button.confirm' | translate }}</button>
+      <button type="button" class="btn btn-grey btn-sm" (click)="cancelModify()">{{ 'common.button.cancel' | translate }}</button>
+    </div>
+    </form>
+  }
+</ng-template>
